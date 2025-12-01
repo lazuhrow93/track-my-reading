@@ -6,13 +6,21 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	<UseFileScopedNamespace>true</UseFileScopedNamespace>
+	<UserSecretsId>67d6504c-1494-42c0-bbeb-c0e4249fc824</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Spectre.Console" Version="0.54.0" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
+		<PrivateAssets>all</PrivateAssets>
+		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
+	<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+	<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Database\Database.csproj" />
     <ProjectReference Include="..\..\Data\Data\Data.csproj" />
   </ItemGroup>
 	

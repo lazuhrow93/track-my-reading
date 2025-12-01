@@ -1,10 +1,13 @@
 ﻿using App.FirstScreen;
 using Data.Queries.Data;
+using Database;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Spectre.Console;
 
 namespace App;
-public static class Program
+
+public class Program
 {
     public static void Main(string[] args)
     {
@@ -17,8 +20,19 @@ public static class Program
     private static ServiceProvider SetupDI()
     {
         var services = new ServiceCollection();
+
+        IConfiguration config = new ConfigurationBuilder()
+            .AddUserSecrets<Program>()
+            .Build();
+
+        services.AddSingleton(config);
+
         services.AddSingleton<Menu>()
-            .AddScoped<IBookQueries, BookQueries>();
+            .AddScoped<IBookQueries, BookQueries>()
+            .AddDbContext<AppDbContext>(opt =>
+            {
+                opt.UseSqlServer(config.GetConnectionString("Database"));
+            });
 
         return services.BuildServiceProvider();
     }
