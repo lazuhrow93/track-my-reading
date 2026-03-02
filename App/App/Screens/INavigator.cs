@@ -5,6 +5,7 @@ public enum Page
     Undefined,
     Main,
     ViewCatalog,
+    AddAuthor,
     AddBook,
 }
 

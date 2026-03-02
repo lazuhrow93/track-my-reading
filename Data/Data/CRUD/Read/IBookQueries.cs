@@ -2,7 +2,7 @@
 using Database.Entites;
 using Microsoft.EntityFrameworkCore;
 
-namespace Data.Queries.Data;
+namespace Data.CRUD.Read;
 
 public interface IBookQueries : IEntityQueries<Book>
 {

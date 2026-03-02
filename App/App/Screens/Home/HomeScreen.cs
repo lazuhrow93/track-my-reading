@@ -9,7 +9,7 @@ public interface IHomeScreen : IScreen
 
 public class HomeScreen : IHomeScreen
 {
-    public static readonly Dictionary<string, Page> _options = new Dictionary<string, Page> 
+    private static readonly Dictionary<string, Page> _options = new Dictionary<string, Page> 
     {
         { "View Catalog", Page.ViewCatalog }
     };

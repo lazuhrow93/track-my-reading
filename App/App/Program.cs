@@ -1,6 +1,6 @@
 ﻿using App.Configuration;
 using App.Screens.Home;
-using Data.Queries.Data;
+using Data.CRUD.Read;
 using Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

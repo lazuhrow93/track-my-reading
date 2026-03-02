@@ -1,4 +1,4 @@
-﻿using Data.Queries.Data;
+﻿using Data.CRUD.Read;
 using Spectre.Console;
 
 namespace App.Screens.Catalog;
@@ -13,6 +13,12 @@ public class CatalogScreen : ICatalogScreen
     private IBookQueries _bookQueries;
     private readonly IServiceProvider _serviceProvider;
 
+    private static readonly Dictionary<string, Page> _options = new Dictionary<string, Page>
+    {
+        { "Add Author", Page.AddAuthor },
+        { "Add Book", Page.AddBook  },
+    };
+
     public CatalogScreen(IBookQueries bookQueries,
         IServiceProvider serviceProvider)
     {
@@ -25,6 +31,15 @@ public class CatalogScreen : ICatalogScreen
         var table = await Build();
 
         AnsiConsole.Write(table);
+
+
+        var choice = AnsiConsole.Prompt(
+             new SelectionPrompt<string>()
+                 .Title("What would you like to do?")
+                 .AddChoices(_options.Keys));
+
+        // now we need to offer the choice for the user to add a book or an author
+        // becuase currently this catalog sscreen shows empty since there are no entries
 
         Console.ReadLine();
     }
