@@ -1,6 +1,6 @@
 ﻿using Spectre.Console;
 
-namespace App.Catalog;
+namespace App.Screens.Catalog;
 
 public static class CatalogMainTableDescriptor
 {

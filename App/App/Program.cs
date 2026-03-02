@@ -1,4 +1,5 @@
-﻿using App.FirstScreen;
+﻿using App.Configuration;
+using App.Screens.Home;
 using Data.Queries.Data;
 using Database;
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +10,12 @@ namespace App;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var provider = SetupDI();
-        var menu = provider.GetRequiredService<Menu>();
+        var menu = provider.GetRequiredService<IHomeScreen>();
 
-        menu.Start();
+        await menu.Show();
     }
 
     private static ServiceProvider SetupDI()
@@ -27,7 +28,8 @@ public class Program
 
         services.AddSingleton(config);
 
-        services.AddSingleton<Menu>()
+        services.AddScreens()
+            .AddNavigator()
             .AddScoped<IBookQueries, BookQueries>()
             .AddDbContext<AppDbContext>(opt =>
             {

@@ -1,16 +1,23 @@
 ﻿using Data.Queries.Data;
-using Database.Entites;
 using Spectre.Console;
 
-namespace App.Catalog;
+namespace App.Screens.Catalog;
 
-public class ViewCatalog
+public interface ICatalogScreen : IScreen
+{
+    
+}
+
+public class CatalogScreen : ICatalogScreen
 {
     private IBookQueries _bookQueries;
-    
-    public ViewCatalog(IBookQueries bookQueries)
+    private readonly IServiceProvider _serviceProvider;
+
+    public CatalogScreen(IBookQueries bookQueries,
+        IServiceProvider serviceProvider)
     {
         _bookQueries = bookQueries;
+        _serviceProvider = serviceProvider;
     }
 
     public async Task Show()
@@ -18,6 +25,8 @@ public class ViewCatalog
         var table = await Build();
 
         AnsiConsole.Write(table);
+
+        Console.ReadLine();
     }
 
     private async Task<Table> Build()
