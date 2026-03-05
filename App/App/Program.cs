@@ -33,6 +33,7 @@ public class Program
             .AddNavigators()
             .AddRepositories()
             .AddQueries()
+            .AddServices()
             .AddDbContext<AppDbContext>(opt =>
             {
                 opt.UseSqlServer(config.GetConnectionString("Database"));

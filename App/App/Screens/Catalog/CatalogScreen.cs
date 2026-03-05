@@ -11,7 +11,7 @@ public interface ICatalogScreen : IScreen
 public class CatalogScreen : ICatalogScreen
 {
     private IBookQueries _bookQueries;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly ICatalogScreenNavigator _navigator;
 
     private static readonly Dictionary<string, Page> _options = new Dictionary<string, Page>
     {
@@ -19,11 +19,10 @@ public class CatalogScreen : ICatalogScreen
         { "Add Book", Page.AddBook  },
     };
 
-    public CatalogScreen(IBookQueries bookQueries,
-        IServiceProvider serviceProvider)
+    public CatalogScreen(IBookQueries bookQueries, ICatalogScreenNavigator navigator)
     {
         _bookQueries = bookQueries;
-        _serviceProvider = serviceProvider;
+        _navigator = navigator;
     }
 
     public async Task Show()
@@ -37,11 +36,7 @@ public class CatalogScreen : ICatalogScreen
                  .Title("What would you like to do?")
                  .AddChoices(_options.Keys));
 
-
-        // now we need to offer the choice for the user to add a book or an author
-        // becuase currently this catalog sscreen shows empty since there are no entries
-
-        Console.ReadLine();
+        await _navigator.Navigate(_options[choice]);
     }
 
     private async Task<Table> Build()

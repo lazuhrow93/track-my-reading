@@ -17,6 +17,7 @@ public class Repository<T> : IRepository<T>
     {
         _context = context;
     }
+
     public async Task<bool> Add(T entity, CancellationToken cancellationToken)
     {
         await _context.Set<T>().AddAsync(entity, cancellationToken);

@@ -44,11 +44,21 @@ public class AddService : IAddService
             return false;
         }
 
+        var now = DateTime.UtcNow;
+        var readingStatus = new ReadingStatus()
+        {
+            State = ReadingState.NotStarted,
+            Description = "Not Started",
+            Percentage = 0m,
+            CreatedUtc = now
+        };
+
         var newBook = new Book()
         {
             Title = title,
             AuthorId = existingAuthor.Id,
-            CreatedUtc = DateTime.UtcNow,
+            CreatedUtc = now,
+            ReadingStatus = readingStatus,
         };
 
         return await _bookRepository.Add(newBook, cancellationToken);

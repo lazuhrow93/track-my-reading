@@ -13,9 +13,10 @@ public class AddBookScreen : IAddBookScreen
     private readonly IAddService _addService;
     private readonly IAddBookScreenNavigator _navigator;
 
-    public AddBookScreen(IAddService addService)
+    public AddBookScreen(IAddService addService, IAddBookScreenNavigator navigator)
     {
         _addService = addService;
+        _navigator = navigator;
     }
 
     public async Task Show()

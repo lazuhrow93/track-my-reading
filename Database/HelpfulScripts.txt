@@ -1,0 +1,9 @@
+be in the directory of the database project
+
+-- To Add a Migration--
+
+dotnet ef migrations add "InitializeUserTables" --startup-project ..\AbstractDevelopment.WebApp --project ..\AbstractDevelopment.BackEnd
+
+-- To Update the Database --
+
+dotnet ef database update "20250823044826_InitializeUserTables" --startup-project ..\AbstractDevelopment.WebApp --project ..\AbstractDevelopment.BackEnd
