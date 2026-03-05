@@ -1,4 +1,6 @@
-﻿using App.Screens.Catalog;
+﻿using App.Screens.Author;
+using App.Screens.Books;
+using App.Screens.Catalog;
 using App.Screens.Home;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,13 +13,18 @@ public static class Screens
         // would be awesome to just scan and get all ISCreen...need to think about this
 
         services.AddScoped<IHomeScreen, HomeScreen>()
-            .AddScoped<ICatalogScreen, CatalogScreen>();
+            .AddScoped<ICatalogScreen, CatalogScreen>()
+            .AddScoped<IAddAuthorScreen, AddAuthorScreen>()
+            .AddScoped<IAddBookScreen, AddBookScreen>();
 
         return services;
     }
 
-    public static IServiceCollection AddNavigator(this IServiceCollection services)
+    public static IServiceCollection AddNavigators(this IServiceCollection services)
     {
-        return services.AddScoped<IHomeScreenNavigator, HomeScreenNavigator>();
+        return services.AddScoped<IHomeScreenNavigator, HomeScreenNavigator>()
+            .AddScoped<ICatalogScreenNavigator, CatalogScreenNavigator>()
+            .AddScoped<IAddAuthorScreenNavigator, AddAuthorScreenNavigator>()
+            .AddScoped<IAddBookScreenNavigator, AddBookScreenNavigator>();
     }
 }

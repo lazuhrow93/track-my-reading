@@ -7,6 +7,7 @@ namespace Data.Services;
 public interface IAddService
 {
     Task<bool> AddBook(string title, string author, CancellationToken cancellationToken);
+    Task<bool> AddAuthor(string name, CancellationToken cancellationToken);
 }
 
 public class AddService : IAddService

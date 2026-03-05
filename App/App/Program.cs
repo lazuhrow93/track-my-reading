@@ -1,5 +1,6 @@
 ﻿using App.Configuration;
 using App.Screens.Home;
+using Data.Configuration;
 using Data.CRUD.Read;
 using Database;
 using Microsoft.EntityFrameworkCore;
@@ -29,8 +30,9 @@ public class Program
         services.AddSingleton(config);
 
         services.AddScreens()
-            .AddNavigator()
-            .AddScoped<IBookQueries, BookQueries>()
+            .AddNavigators()
+            .AddRepositories()
+            .AddQueries()
             .AddDbContext<AppDbContext>(opt =>
             {
                 opt.UseSqlServer(config.GetConnectionString("Database"));

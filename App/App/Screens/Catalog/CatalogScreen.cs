@@ -32,11 +32,11 @@ public class CatalogScreen : ICatalogScreen
 
         AnsiConsole.Write(table);
 
-
         var choice = AnsiConsole.Prompt(
              new SelectionPrompt<string>()
                  .Title("What would you like to do?")
                  .AddChoices(_options.Keys));
+
 
         // now we need to offer the choice for the user to add a book or an author
         // becuase currently this catalog sscreen shows empty since there are no entries
