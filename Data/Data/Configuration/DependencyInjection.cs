@@ -10,7 +10,8 @@ public static class DependencyInjection
     public static IServiceCollection AddQueries(this IServiceCollection services)
     {
         return services.AddScoped<IBookQueries, BookQueries>()
-            .AddScoped<IAuthorQueries, AuthorQueries>();
+            .AddScoped<IAuthorQueries, AuthorQueries>()
+            .AddScoped<ICharacterQueries, CharacterQueries>();
     }
 
     public static IServiceCollection AddRepositories(this IServiceCollection services)

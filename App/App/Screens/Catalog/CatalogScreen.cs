@@ -17,6 +17,7 @@ public class CatalogScreen : ICatalogScreen
     {
         { "Add Author", Page.AddAuthor },
         { "Add Book", Page.AddBook  },
+        { "Add Character", Page.AddCharacter },
     };
 
     public CatalogScreen(IBookQueries bookQueries, ICatalogScreenNavigator navigator)

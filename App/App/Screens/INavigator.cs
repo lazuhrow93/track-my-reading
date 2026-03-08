@@ -7,6 +7,7 @@ public enum Page
     ViewCatalog,
     AddAuthor,
     AddBook,
+    AddCharacter,
 }
 
 public interface INavigator

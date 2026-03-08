@@ -8,24 +8,31 @@ public interface IAddService
 {
     Task<bool> AddBook(string title, string author, CancellationToken cancellationToken);
     Task<bool> AddAuthor(string name, CancellationToken cancellationToken);
+    Task<bool> AddCharacter(string name, string? description, int bookId, CancellationToken cancellationToken);
 }
 
 public class AddService : IAddService
 {
     private readonly IBookQueries _bookQueries;
     private readonly IAuthorQueries _authorQueries;
+    private readonly ICharacterQueries _characterQueries;
     private readonly IRepository<Book> _bookRepository;
     private readonly IRepository<Author> _authorRepository;
+    private readonly IRepository<Character> _characterRepository;
 
     public AddService(IBookQueries bookQueries,
         IAuthorQueries authorQueries,
+        ICharacterQueries characterQueries,
         IRepository<Book> bookRepository,
-        IRepository<Author> authorRepository)
+        IRepository<Author> authorRepository,
+        IRepository<Character> characterRepository)
     {
         _bookQueries = bookQueries;
         _authorQueries = authorQueries;
+        _characterQueries = characterQueries;
         _bookRepository = bookRepository;
         _authorRepository = authorRepository;
+        _characterRepository = characterRepository;
     }
 
     public async Task<bool> AddBook(string title, string author, CancellationToken cancellationToken)
@@ -79,5 +86,24 @@ public class AddService : IAddService
         };
 
         return await _authorRepository.Add(newAuthor, cancellationToken);
+    }
+
+    public async Task<bool> AddCharacter(string name, string? description, int bookId, CancellationToken cancellationToken)
+    {
+        var exists = await _characterQueries.CharacterExists(name, bookId, cancellationToken);
+        if (exists)
+        {
+            return false;
+        }
+
+        var newCharacter = new Character()
+        {
+            Name = name,
+            Description = description,
+            BookId = bookId,
+            CreatedUtc = DateTime.UtcNow,
+        };
+
+        return await _characterRepository.Add(newCharacter, cancellationToken);
     }
 }
