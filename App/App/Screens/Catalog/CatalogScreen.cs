@@ -60,6 +60,7 @@ public class CatalogScreen : ICatalogScreen
             {
                 while (true)
                 {
+                    ctx.UpdateTarget(BuildLiveTable(booksByIndex, cursor, currentSelection));
                     var key = Console.ReadKey(intercept: true);
 
                     if (key.Key == ConsoleKey.UpArrow)
@@ -73,8 +74,6 @@ public class CatalogScreen : ICatalogScreen
                     }
                     else
                         continue;
-
-                    ctx.UpdateTarget(BuildLiveTable(booksByIndex, cursor, currentSelection));
                 }
 
                 await Task.CompletedTask;
