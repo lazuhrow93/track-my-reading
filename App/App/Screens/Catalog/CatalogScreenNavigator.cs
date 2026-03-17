@@ -1,7 +1,7 @@
 ﻿
 using App.Screens.Author;
 using App.Screens.Books;
-using App.Screens.Character;
+using App.Screens.Characters;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace App.Screens.Catalog;
@@ -21,16 +21,29 @@ public class CatalogScreenNavigator : ICatalogScreenNavigator
         _serviceProvider = serviceProvider;
     }
 
-    public Task Navigate(Page target)
+    public Task Navigate(Page target, IScreenInput? inputType, CancellationToken cancellationToken)
     {
-        IScreen targetScreen = target switch
+        if (target == Page.AddBook)
         {
-            Page.AddBook => _serviceProvider.GetRequiredService<IAddBookScreen>(),
-            Page.AddAuthor => _serviceProvider.GetRequiredService<IAddAuthorScreen>(),
-            Page.AddCharacter => _serviceProvider.GetRequiredService<IAddCharacterScreen>(),
-            _ => throw new NotSupportedException($"Navigation to {target} is not supported.")
-        };
+            var screen = _serviceProvider.GetRequiredService<IAddBookScreen>();
+            return screen.Show(inputType, cancellationToken);
+        }
+        else if (target == Page.AddAuthor)
+        {
+            var screen = _serviceProvider.GetRequiredService<IAddAuthorScreen>();
+            return screen.Show(inputType, cancellationToken);
+        }
+        else if (target == Page.AddCharacter)
+        {
+            var screen = _serviceProvider.GetRequiredService<IAddCharacterScreen>();
+            return screen.Show(inputType, cancellationToken);
+        }
+        else if (target == Page.BookDetails)
+        {
+            var screen = _serviceProvider.GetRequiredService<IBookDetailsScreen>();
+            return screen.Show(inputType, cancellationToken);
+        }
 
-        return targetScreen.Show();
+        return _serviceProvider.GetRequiredService<ICatalogScreen>().Show(CatalogScreenInput.Default, cancellationToken);
     }
 }

@@ -1,11 +1,18 @@
-﻿using Data.CRUD.Read;
+﻿using App.Screens.Books;
+using Data.CRUD.Read;
+using Database.Entites;
 using Spectre.Console;
 
 namespace App.Screens.Catalog;
 
-public interface ICatalogScreen : IScreen
+public interface ICatalogScreen : IScreen<CatalogScreenInput>
 {
     
+}
+
+public class CatalogScreenInput : IScreenInput
+{
+    public static CatalogScreenInput? Default { get; set; }
 }
 
 public class CatalogScreen : ICatalogScreen
@@ -26,31 +33,91 @@ public class CatalogScreen : ICatalogScreen
         _navigator = navigator;
     }
 
-    public async Task Show()
+    public async Task Show(IScreenInput? input, CancellationToken cancellationToken)
     {
-        var table = await Build();
+        var selectedBooks = await SelectBooks(cancellationToken);
 
-        AnsiConsole.Write(table);
+        var viewBookInput = new BookDetailsScreenInput()
+        {
+            BookId = selectedBooks.Id
+        };
 
-        var choice = AnsiConsole.Prompt(
-             new SelectionPrompt<string>()
-                 .Title("What would you like to do?")
-                 .AddChoices(_options.Keys));
-
-        await _navigator.Navigate(_options[choice]);
+        await _navigator.Navigate(Page.BookDetails, viewBookInput, cancellationToken);
     }
 
-    private async Task<Table> Build()
+    private async Task<Book> SelectBooks(CancellationToken cancellationToken)
     {
-        var books = await _bookQueries.FetchAllWithAuthorAndStatus(CancellationToken.None);
+        var books = await _bookQueries.FetchAllWithAuthorAndStatus(cancellationToken);
 
+        var index = 0;
+        var booksByIndex = books.Select(b => KeyValuePair.Create(index++, b))
+            .ToDictionary(kv => kv.Key, kv => kv.Value);
+        int cursor = 0;
+        int currentSelection = 0;
+
+        await AnsiConsole.Live(BuildLiveTable(booksByIndex, cursor, currentSelection))
+            .StartAsync(async ctx =>
+            {
+                while (true)
+                {
+                    var key = Console.ReadKey(intercept: true);
+
+                    if (key.Key == ConsoleKey.UpArrow)
+                        cursor = Math.Max(0, cursor - 1);
+                    else if (key.Key == ConsoleKey.DownArrow)
+                        cursor = Math.Min(books.Count - 1, cursor + 1);
+                    else if (key.Key == ConsoleKey.Enter)
+                    {
+                        currentSelection = cursor;
+                        break;
+                    }
+                    else
+                        continue;
+
+                    ctx.UpdateTarget(BuildLiveTable(booksByIndex, cursor, currentSelection));
+                }
+
+                await Task.CompletedTask;
+            });
+
+        return booksByIndex[currentSelection];
+    }
+
+    private Table BuildLiveTable(Dictionary<int, Book>? books, int cursorIndex, int currentSelection)
+    {
         var table = new Table().AddColumns(CatalogMainTableDescriptor.Columns());
-        
-        foreach(var book in books)
+
+        if (books == null)
+            return table;
+
+        foreach(var kvp in books)
         {
-            table.AddRow(book.Id.ToString(), book.Title.ToString(), book.Author!.Name.ToString(), book.ReadingStatus!.State.ToString());
+            var isSeleted = kvp.Key;
         }
 
+        for (int i = 0; i < books.Count; i++)
+        {
+            var book = books[i];
+            var isCurrentlySelected = cursorIndex == i;
+
+
+            table.AddRow(
+                FormatRow(book.Id.ToString(), isCurrentlySelected),
+                FormatRow(book.Title, isCurrentlySelected),
+                FormatRow(book.Author!.Name, isCurrentlySelected),
+                FormatRow(book.ReadingStatus!.State.ToString(), isCurrentlySelected));
+        }
+
+        table.Caption = new TableTitle("[grey]↑↓ navigate   Space select   Enter confirm[/]");
         return table;
+    }
+
+    private string FormatRow(string rawString, bool ifSelected)
+    {
+        return ifSelected switch
+        {
+            true => $"[bold green]{rawString}[/]",
+            false => rawString
+        };
     }
 }

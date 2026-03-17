@@ -1,4 +1,5 @@
 ﻿using App.Screens.Catalog;
+using App.Screens.Home;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace App.Screens.Author;
@@ -16,14 +17,14 @@ public class AddAuthorScreenNavigator : IAddAuthorScreenNavigator
         _serviceProvider = serviceProvider;
     }
 
-    public Task Navigate(Page target)
+    public Task Navigate(Page target, IScreenInput? input, CancellationToken cancellationToken)
     {
-        IScreen screen = target switch
+        if (target == Page.ViewCatalog)
         {
-            Page.ViewCatalog => _serviceProvider.GetRequiredService<ICatalogScreen>(),
-            _ => throw new InvalidOperationException($"Navigation to {target} is not supported from AddAuthorScreen.")
-        };
+            var catalogScreen = _serviceProvider.GetRequiredService<ICatalogScreen>();
+            return catalogScreen.Show(input, cancellationToken);
+        }
 
-        return screen.Show();
+        return _serviceProvider.GetRequiredService<IHomeScreen>().Show(HomeScreenInput.Default, cancellationToken);
     }
 }

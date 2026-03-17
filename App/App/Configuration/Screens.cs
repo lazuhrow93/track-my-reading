@@ -1,7 +1,7 @@
 ﻿using App.Screens.Author;
 using App.Screens.Books;
 using App.Screens.Catalog;
-using App.Screens.Character;
+using App.Screens.Characters;
 using App.Screens.Home;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,7 +17,8 @@ public static class Screens
             .AddScoped<ICatalogScreen, CatalogScreen>()
             .AddScoped<IAddAuthorScreen, AddAuthorScreen>()
             .AddScoped<IAddBookScreen, AddBookScreen>()
-            .AddScoped<IAddCharacterScreen, AddCharacterScreen>();
+            .AddScoped<IAddCharacterScreen, AddCharacterScreen>()
+            .AddScoped<IBookDetailsScreen, BookDetailsScreen>();
 
         return services;
     }
@@ -28,6 +29,7 @@ public static class Screens
             .AddScoped<ICatalogScreenNavigator, CatalogScreenNavigator>()
             .AddScoped<IAddAuthorScreenNavigator, AddAuthorScreenNavigator>()
             .AddScoped<IAddBookScreenNavigator, AddBookScreenNavigator>()
-            .AddScoped<IAddCharacterScreenNavigator, AddCharacterScreenNavigator>();
+            .AddScoped<IAddCharacterScreenNavigator, AddCharacterScreenNavigator>()
+            .AddScoped<IBookDetailsScreenNavigator, BookDetailsScreenNavigator>();
     }
 }

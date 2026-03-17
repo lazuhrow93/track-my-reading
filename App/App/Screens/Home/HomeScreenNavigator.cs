@@ -17,13 +17,14 @@ public class HomeScreenNavigator : IHomeScreenNavigator
         _serviceProvider = serviceProvider;
     }
 
-    public Task Navigate(Page target)
+    public Task Navigate(Page target, IScreenInput? input, CancellationToken cancellationToken)
     {
-        IScreen? resultScreen = target switch
+        if (target == Page.ViewCatalog)
         {
-            Page.ViewCatalog => _serviceProvider.GetService<ICatalogScreen>(),
-            _ => throw new NotImplementedException("IDK WTF IS HAPPENING")
-        };
-        return resultScreen!.Show();
+            var screen = _serviceProvider.GetRequiredService<ICatalogScreen>();
+            return screen.Show(input, cancellationToken);
+        }
+
+        return _serviceProvider.GetRequiredService<IHomeScreen>().Show(input, cancellationToken);
     }
 }

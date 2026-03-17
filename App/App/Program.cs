@@ -13,10 +13,17 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
+        using var cts = new CancellationTokenSource();
+        Console.CancelKeyPress += (_, e) =>
+        {
+            e.Cancel = true;
+            cts.Cancel();
+        };
+
         var provider = SetupDI();
         var menu = provider.GetRequiredService<IHomeScreen>();
 
-        await menu.Show();
+        await menu.Show(HomeScreenInput.Default, cts.Token);
     }
 
     private static ServiceProvider SetupDI()

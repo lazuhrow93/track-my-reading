@@ -1,10 +1,16 @@
-﻿using Spectre.Console;
+﻿using App.Screens.Catalog;
+using Spectre.Console;
 
 namespace App.Screens.Home;
 
-public interface IHomeScreen : IScreen
+public interface IHomeScreen : IScreen<HomeScreenInput>
 {
 
+}
+
+public record HomeScreenInput : IScreenInput
+{
+    public static HomeScreenInput? Default => null;
 }
 
 public class HomeScreen : IHomeScreen
@@ -21,7 +27,7 @@ public class HomeScreen : IHomeScreen
         _navigator = navigator;
     }
 
-    public async Task Show()
+    public Task Show(IScreenInput? input, CancellationToken cancellationToken)
     {
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
@@ -30,6 +36,16 @@ public class HomeScreen : IHomeScreen
                 .MoreChoicesText("[grey](Move up and down to reveal more options)[/]")
                 .AddChoices(_options.Keys));
 
-        await _navigator.Navigate(_options[choice]);
+        var target = _options[choice];
+
+        if (target == Page.ViewCatalog)
+        {
+            return _navigator.Navigate(target, CatalogScreenInput.Default, cancellationToken);
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+        
     }
 }

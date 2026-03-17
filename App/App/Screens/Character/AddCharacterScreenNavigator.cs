@@ -1,7 +1,8 @@
 using App.Screens.Catalog;
+using App.Screens.Home;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace App.Screens.Character;
+namespace App.Screens.Characters;
 
 public interface IAddCharacterScreenNavigator : INavigator
 {
@@ -17,14 +18,14 @@ public class AddCharacterScreenNavigator : IAddCharacterScreenNavigator
         _serviceProvider = serviceProvider;
     }
 
-    public Task Navigate(Page target)
+    public Task Navigate(Page target, IScreenInput? inputType, CancellationToken cancellationToken)
     {
-        IScreen screen = target switch
+        if (target == Page.ViewCatalog)
         {
-            Page.ViewCatalog => _serviceProvider.GetRequiredService<ICatalogScreen>(),
-            _ => throw new InvalidOperationException($"Navigation to {target} is not supported from AddCharacterScreen.")
-        };
+            var screen = _serviceProvider.GetRequiredService<ICatalogScreen>();
+            return screen.Show(inputType, cancellationToken);
+        }
 
-        return screen.Show();
+        return _serviceProvider.GetRequiredService<IHomeScreen>().Show(HomeScreenInput.Default, cancellationToken);
     }
 }

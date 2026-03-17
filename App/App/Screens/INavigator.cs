@@ -8,9 +8,10 @@ public enum Page
     AddAuthor,
     AddBook,
     AddCharacter,
+    BookDetails,
 }
 
 public interface INavigator
 {
-    Task Navigate(Page target);
+    Task Navigate(Page target, IScreenInput? input, CancellationToken cancellationToken);
 }

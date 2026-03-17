@@ -1,6 +1,11 @@
 ﻿namespace App.Screens;
 
-public interface IScreen
+public interface IScreen<TInputType>
+    where TInputType : IScreenInput
 {
-    Task Show();
+    Task Show(IScreenInput? input, CancellationToken cancellationToken);
+}
+
+public interface IScreenInput
+{
 }
