@@ -35,11 +35,12 @@ public class CatalogScreen : ICatalogScreen
 
     public async Task Show(IScreenInput? input, CancellationToken cancellationToken)
     {
+        AnsiConsole.Clear();
         var selectedBooks = await SelectBooks(cancellationToken);
 
         var viewBookInput = new BookDetailsScreenInput()
         {
-            BookId = selectedBooks.Id
+            BookId = selectedBooks.Id,
         };
 
         await _navigator.Navigate(Page.BookDetails, viewBookInput, cancellationToken);

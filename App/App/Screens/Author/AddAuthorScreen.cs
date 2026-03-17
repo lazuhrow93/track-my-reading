@@ -27,6 +27,7 @@ public class AddAuthorScreen : IAddAuthorScreen
 
     public async Task Show(IScreenInput? input, CancellationToken cancellationToken)
     {
+        AnsiConsole.Clear();
         var name = AnsiConsole.Ask<string>("What is the name of the author you want to add?");
         await _addService.AddAuthor(name, cancellationToken);
 

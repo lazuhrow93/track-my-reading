@@ -29,6 +29,7 @@ public class HomeScreen : IHomeScreen
 
     public Task Show(IScreenInput? input, CancellationToken cancellationToken)
     {
+        AnsiConsole.Clear();
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title("Welcome Laz, what can I do for you today?")

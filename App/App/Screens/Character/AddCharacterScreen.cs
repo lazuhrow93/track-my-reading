@@ -1,3 +1,4 @@
+using App.Screens.Books;
 using Data.Services;
 using Spectre.Console;
 
@@ -11,6 +12,8 @@ public interface IAddCharacterScreen : IScreen<AddCharacterScreenInput>
 public class AddCharacterScreenInput : IScreenInput
 {
     public static AddCharacterScreenInput? Default => null;
+
+    public required int BookId { get; set; }
 }
 
 public class AddCharacterScreen : IAddCharacterScreen
@@ -26,12 +29,20 @@ public class AddCharacterScreen : IAddCharacterScreen
 
     public async Task Show(IScreenInput? input, CancellationToken cancellationToken)
     {
-        var bookId = AnsiConsole.Ask<int>("What is the Book ID for this character?");
+        if (input is not AddCharacterScreenInput addCharacterInput)
+        {
+            throw new ArgumentException($"Expected input of type {typeof(AddCharacterScreenInput).FullName}", nameof(input));
+        }
+
+        AnsiConsole.Clear();
         var name = AnsiConsole.Ask<string>("What is the character's name?");
         var description = AnsiConsole.Ask<string>("Description? (leave blank to skip)");
 
-        await _addService.AddCharacter(name, string.IsNullOrWhiteSpace(description) ? null : description, bookId, cancellationToken);
+        await _addService.AddCharacter(name, string.IsNullOrWhiteSpace(description) ? null : description, addCharacterInput.BookId, cancellationToken);
 
-        await _navigator.Navigate(Page.ViewCatalog, input, cancellationToken);
+        await _navigator.Navigate(Page.BookDetails, new BookDetailsScreenInput()
+        {
+            BookId = addCharacterInput.BookId
+        }, cancellationToken);
     }
 }

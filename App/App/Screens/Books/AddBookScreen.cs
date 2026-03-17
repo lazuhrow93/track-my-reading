@@ -27,6 +27,7 @@ public class AddBookScreen : IAddBookScreen
 
     public async Task Show(IScreenInput? input, CancellationToken cancellationToken)
     {
+        AnsiConsole.Clear();
         var name = AnsiConsole.Ask<string>("Who is the author of your book?");
         var book = AnsiConsole.Ask<string>("Title?");
 

@@ -8,6 +8,8 @@ public interface IBookQueries : IEntityQueries<Book>
 {
     Task<List<Book>> FetchAllWithAuthorAndStatus(CancellationToken cancellationToken);
 
+    Task<Book?> GetByIdWithAuthorAndStatus(int id, CancellationToken cancellationToken);
+
     Task<bool> BookExists(string title, string author, CancellationToken cancellationToken);
 }
 
@@ -28,5 +30,12 @@ public class BookQueries : EntityQueriesBase<Book>, IBookQueries
     {
         return Query.Include(b => b.Author)
             .AnyAsync(b => b.Title == title && b.Author!.Name == author, cancellationToken);
+    }
+
+    public Task<Book?> GetByIdWithAuthorAndStatus(int id, CancellationToken cancellationToken)
+    {
+        return Query.Include(b => b.Author)
+            .Include(b => b.ReadingStatus)
+            .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
     }
 }
