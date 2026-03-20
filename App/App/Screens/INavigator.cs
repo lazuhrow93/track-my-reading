@@ -7,6 +7,8 @@ public enum Page
     ViewCatalog,
     AddAuthor,
     AddBook,
+    DeleteBook,
+    EditBook,
     AddCharacter,
     BookDetails,
 }

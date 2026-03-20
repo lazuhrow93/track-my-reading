@@ -2,7 +2,6 @@
 using App.Screens.Characters;
 using Data.CRUD.Read;
 using Database.Entites;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Spectre.Console;
 
 namespace App.Screens.Books;
@@ -81,27 +80,22 @@ internal class BookDetailsScreen : IBookDetailsScreen
     {
         var characters = await _characterQueries.ByBookId(bookId, cancellationToken);
 
-        var index = 0;
-        var charactersByIndex = characters.Select(b => KeyValuePair.Create(index++, b))
-            .ToDictionary(kv => kv.Key, kv => kv.Value);
-        int? cursor = 0;
-        int currentSelection = 0;
-
+        int cursor = 0;
         var returnVal = new BookDetailsScreenAction();
 
-        await AnsiConsole.Live(BuildLiveTable(charactersByIndex, cursor!.Value, bookTitle, author, percentageCompleted))
+        await AnsiConsole.Live(BuildLiveTable(characters, cursor, bookTitle, author, percentageCompleted))
             .StartAsync(async ctx =>
             {
                 while (true)
                 {
-                    ctx.UpdateTarget(BuildLiveTable(charactersByIndex, cursor!.Value, bookTitle, author, percentageCompleted));
+                    ctx.UpdateTarget(BuildLiveTable(characters, cursor, bookTitle, author, percentageCompleted));
 
                     var key = Console.ReadKey(intercept: true);
 
                     if (key.Key == ConsoleKey.UpArrow)
-                        cursor = Math.Max(0, cursor!.Value - 1);
+                        cursor = Math.Max(0, cursor - 1);
                     else if (key.Key == ConsoleKey.DownArrow)
-                        cursor = Math.Min(characters.Count - 1, cursor!.Value + 1);
+                        cursor = Math.Min(characters.Count - 1, cursor + 1);
                     else if (key.Key == ConsoleKey.D1)
                     {
                         returnVal = new BookDetailsScreenAction(null, Page.AddCharacter);
@@ -114,12 +108,11 @@ internal class BookDetailsScreen : IBookDetailsScreen
                     }
                     else if (key.Key == ConsoleKey.Enter)
                     {
-                        returnVal = new BookDetailsScreenAction(charactersByIndex[currentSelection], null);
+                        returnVal = new BookDetailsScreenAction(characters[cursor], null);
                         break;
                     }
                     else
                         continue;
-
                 }
 
                 await Task.CompletedTask;
@@ -128,7 +121,7 @@ internal class BookDetailsScreen : IBookDetailsScreen
         return returnVal;
     }
 
-    private Table BuildLiveTable(Dictionary<int, Character>? characters, int cursorIndex, string bookTitle, string author, decimal percentageCompleted)
+    private Table BuildLiveTable(List<Character>? characters, int cursorIndex, string bookTitle, string author, decimal percentageCompleted)
     {
         var table = new Table().Title(new TableTitle(FormatTitle(bookTitle, author, percentageCompleted)))
             .AddColumns(BookDetailsMainTableDescriptor.Columns());
@@ -136,16 +129,10 @@ internal class BookDetailsScreen : IBookDetailsScreen
         if (characters == null)
             return table;
 
-        foreach (var kvp in characters)
-        {
-            var isSeleted = kvp.Key;
-        }
-
         for (int i = 0; i < characters.Count; i++)
         {
             var character = characters[i];
             var isCurrentlySelected = cursorIndex == i;
-
 
             table.AddRow(
                 FormatRow(character.Id.ToString(), isCurrentlySelected),
@@ -153,7 +140,7 @@ internal class BookDetailsScreen : IBookDetailsScreen
                 FormatRow(character.Description ?? string.Empty, isCurrentlySelected));
         }
 
-        table.Caption = new TableTitle("[grey]↑↓ navigate   Space select   Enter confirm   [[1]] Add Character[/]");
+        table.Caption = new TableTitle("[grey]↑↓ navigate   Enter confirm   [[1]] Add Character[/]");
         return table;
     }
 
