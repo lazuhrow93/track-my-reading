@@ -17,7 +17,7 @@ public class HomeScreen : IHomeScreen
 {
     private static readonly Dictionary<string, Page> _options = new Dictionary<string, Page> 
     {
-        { "View Catalog", Page.ViewCatalog }
+        { "View Your Catalog", Page.ViewCatalog }
     };
 
     private readonly IHomeScreenNavigator _navigator;

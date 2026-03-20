@@ -20,13 +20,6 @@ public class CatalogScreen : ICatalogScreen
     private IBookQueries _bookQueries;
     private readonly ICatalogScreenNavigator _navigator;
 
-    private static readonly Dictionary<string, Page> _options = new Dictionary<string, Page>
-    {
-        { "Add Author", Page.AddAuthor },
-        { "Add Book", Page.AddBook  },
-        { "Add Character", Page.AddCharacter },
-    };
-
     public CatalogScreen(IBookQueries bookQueries, ICatalogScreenNavigator navigator)
     {
         _bookQueries = bookQueries;
@@ -89,11 +82,6 @@ public class CatalogScreen : ICatalogScreen
 
         if (books == null)
             return table;
-
-        foreach(var kvp in books)
-        {
-            var isSeleted = kvp.Key;
-        }
 
         for (int i = 0; i < books.Count; i++)
         {

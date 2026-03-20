@@ -1,11 +1,11 @@
 ﻿using App.Configuration;
 using App.Screens.Home;
 using Data.Configuration;
-using Data.CRUD.Read;
 using Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Spectre.Console;
 
 namespace App;
 
@@ -22,7 +22,7 @@ public class Program
 
         var provider = SetupDI();
         var menu = provider.GetRequiredService<IHomeScreen>();
-
+        AnsiConsole.Background = Color.Grey11;
         await menu.Show(HomeScreenInput.Default, cts.Token);
     }
 

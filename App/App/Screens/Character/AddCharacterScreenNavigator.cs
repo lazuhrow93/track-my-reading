@@ -1,3 +1,4 @@
+using App.Screens.Books;
 using App.Screens.Catalog;
 using App.Screens.Home;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +24,12 @@ public class AddCharacterScreenNavigator : IAddCharacterScreenNavigator
         if (target == Page.ViewCatalog)
         {
             var screen = _serviceProvider.GetRequiredService<ICatalogScreen>();
+            return screen.Show(inputType, cancellationToken);
+        }
+
+        if (target == Page.BookDetails)
+        {
+            var screen = _serviceProvider.GetRequiredService<IBookDetailsScreen>();
             return screen.Show(inputType, cancellationToken);
         }
 
