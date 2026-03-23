@@ -43,7 +43,7 @@ public class CatalogScreen : ICatalogScreen
         var books = await _bookQueries.FetchAllWithAuthorAndStatus(cancellationToken);
         var choices = BuildChoices(books);
 
-        int maxCursor = books.Count + _actions.Count - 1;
+        int maxCursor = _actions.Count + books.Count - 1;
         int cursor = 0;
 
         //when building the live table, it has to line up perfectly with choices. 
@@ -59,7 +59,12 @@ public class CatalogScreen : ICatalogScreen
                     if (key.Key == ConsoleKey.UpArrow)
                         cursor = Math.Max(0, cursor - 1);
                     else if (key.Key == ConsoleKey.DownArrow)
-                        cursor = Math.Min(maxCursor, cursor + 1);
+                    {
+                        if (cursor == maxCursor)
+                            cursor = 0;
+                        else
+                            cursor++;
+                    }
                     else if (key.Key == ConsoleKey.Enter)
                         break;
                     else
@@ -76,31 +81,34 @@ public class CatalogScreen : ICatalogScreen
     {
         var table = new Table().AddColumns(CatalogMainTableDescriptor.Columns());
 
+        var catalogScreenOptionIndex = 0;
+        for (int i = 0; i < _actions.Count; i++)
+        {
+            var isCurrentlySelected = currentCursorIndex == catalogScreenOptionIndex;
+            table.AddRow(
+                string.Empty,
+                FormatRow(_actions[i].Label, isCurrentlySelected),
+                string.Empty,
+                string.Empty);
+            catalogScreenOptionIndex++;
+        }
+
+        table.AddRow("[grey]───[/]", "[grey]───────────────────[/]", "[grey]───────────────[/]", "[grey]──────[/]");
+
         if (books == null || books.Count == 0)
             return table;
 
         for (int i = 0; i < books.Count; i++)
         {
             var book = books[i];
-            var isCurrentlySelected = currentCursorIndex == i;
+            var isCurrentlySelected = currentCursorIndex == catalogScreenOptionIndex;
 
             table.AddRow(
                 FormatRow(book.Id.ToString(), isCurrentlySelected),
                 FormatRow(book.Title, isCurrentlySelected),
                 FormatRow(book.Author!.Name, isCurrentlySelected),
                 FormatRow(book.ReadingStatus!.State.ToString(), isCurrentlySelected));
-        }
-
-        table.AddRow("[grey]───[/]", "[grey]───────────────────[/]", "[grey]───────────────[/]", "[grey]──────[/]");
-
-        for (int i = 0; i < _actions.Count; i++)
-        {
-            var isCurrentlySelected = currentCursorIndex == books.Count + i;
-            table.AddRow(
-                string.Empty,
-                FormatRow(_actions[i].Label, isCurrentlySelected),
-                string.Empty,
-                string.Empty);
+            catalogScreenOptionIndex++;
         }
 
         table.Caption = new TableTitle("[grey]↑↓ navigate   Enter confirm[/]");
@@ -118,19 +126,25 @@ public class CatalogScreen : ICatalogScreen
 
     private static List<CatalogScreenChoice> BuildChoices(List<Book> books)
     {
-        //choices for books
-        var choices = books.Select(b => new CatalogScreenChoice()
+        var choices = new List<CatalogScreenChoice>
         {
-            TargetPage = Page.BookDetails,
-            ScreenInput = new BookDetailsScreenInput { BookId = b.Id }
-        }).ToList();
+            new CatalogScreenChoice()
+            {
+                TargetPage = Page.AddBook,
+                ScreenInput = AddBookScreenInput.Default
+            }
+        };
 
-        //choices for actions
-        choices.Add(new CatalogScreenChoice()
+        //choices for books
+        foreach (var b in books)
         {
-            TargetPage = Page.AddBook,
-            ScreenInput = AddBookScreenInput.Default
-        });
+            choices.Add(new CatalogScreenChoice()
+            {
+                TargetPage = Page.BookDetails,
+                ScreenInput = new BookDetailsScreenInput { BookId = b.Id }
+            });
+        }
+        
         return choices;
     }
 }
