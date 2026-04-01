@@ -5,7 +5,3 @@ public interface IScreen<TInputType>
 {
     Task Show(IScreenInput? input, CancellationToken cancellationToken);
 }
-
-public interface IScreenInput
-{
-}

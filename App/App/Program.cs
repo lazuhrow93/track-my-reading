@@ -22,7 +22,6 @@ public class Program
 
         var provider = SetupDI();
         var menu = provider.GetRequiredService<IHomeScreen>();
-        AnsiConsole.Background = Color.Grey11;
         await menu.Show(HomeScreenInput.Default, cts.Token);
     }
 

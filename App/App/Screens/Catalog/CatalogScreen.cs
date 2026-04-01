@@ -10,12 +10,15 @@ public interface ICatalogScreen : IScreen<CatalogScreenInput>
     
 }
 
-public class CatalogScreenInput : IScreenInput
+public class CatalogScreenInput : ScreenInput, IScreenInput
 {
-    public static CatalogScreenInput? Default { get; set; }
+    public static CatalogScreenInput? Default => new()
+    {
+        ShouldClear = true,
+    };
 }
 
-public class CatalogScreen : ICatalogScreen
+public class CatalogScreen : Screen<CatalogScreenInput>, ICatalogScreen
 {
     private static readonly List<(string Label, Page Target)> _actions =
     [
@@ -31,9 +34,8 @@ public class CatalogScreen : ICatalogScreen
         _navigator = navigator;
     }
 
-    public async Task Show(IScreenInput? input, CancellationToken cancellationToken)
+    protected override async Task OnShow(IScreenInput? input, CancellationToken cancellationToken)
     {
-        AnsiConsole.Clear();
         var choice = await ShowInteractiveBookTable(cancellationToken);
         await _navigator.Navigate(choice.TargetPage, choice.ScreenInput, cancellationToken);
     }

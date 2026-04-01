@@ -10,7 +10,7 @@ public interface IBookDetailsScreen : IScreen<BookDetailsScreenInput>
 {
 }
 
-public class BookDetailsScreenInput : IScreenInput
+public class BookDetailsScreenInput : ScreenInput, IScreenInput
 {
     public IScreenInput? Default => null;
 
@@ -32,7 +32,7 @@ public record BookDetailsScreenAction
     }
 }
 
-internal class BookDetailsScreen : IBookDetailsScreen
+internal class BookDetailsScreen : Screen<BookDetailsScreenInput>, IBookDetailsScreen
 {
     private readonly IBookDetailsScreenNavigator _navigator;
     private readonly ICharacterQueries _characterQueries;
@@ -45,9 +45,8 @@ internal class BookDetailsScreen : IBookDetailsScreen
         _bookQueries = bookQueries;
     }
 
-    public async Task Show(IScreenInput? input, CancellationToken cancellationToken)
+    protected override async Task OnShow(IScreenInput? input, CancellationToken cancellationToken)
     {
-        AnsiConsole.Clear();
         if (input is not BookDetailsScreenInput parsedInput)
         {
             throw new ArgumentNullException();
@@ -124,7 +123,8 @@ internal class BookDetailsScreen : IBookDetailsScreen
     private Table BuildLiveTable(List<Character>? characters, int cursorIndex, string bookTitle, string author, decimal percentageCompleted)
     {
         var table = new Table().Title(new TableTitle(FormatTitle(bookTitle, author, percentageCompleted)))
-            .AddColumns(BookDetailsMainTableDescriptor.Columns());
+            .AddColumns(BookDetailsMainTableDescriptor.Columns())
+            .Width(Console.WindowWidth);
 
         if (characters == null)
             return table;

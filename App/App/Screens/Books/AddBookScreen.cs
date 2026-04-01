@@ -10,12 +10,15 @@ public interface IAddBookScreen : IScreen<AddBookScreenInput>
 
 }
 
-public record AddBookScreenInput : IScreenInput
+public class AddBookScreenInput : ScreenInput, IScreenInput
 {
-    public static AddBookScreenInput? Default => null;
+    public static AddBookScreenInput? Default => new()
+    {
+        ShouldClear = false
+    };
 }
 
-public class AddBookScreen : IAddBookScreen
+public class AddBookScreen : Screen<AddBookScreenInput>, IAddBookScreen
 {
     private readonly IAddService _addService;
     private readonly IAuthorQueries _authorQueries;
@@ -28,7 +31,7 @@ public class AddBookScreen : IAddBookScreen
         _navigator = navigator;
     }
 
-    public async Task Show(IScreenInput? input, CancellationToken cancellationToken)
+    protected override async Task OnShow(IScreenInput? input, CancellationToken cancellationToken)
     {
         AnsiConsole.Write(new Rule("[bold green]Add a Book[/]").RuleStyle("grey").LeftJustified());
         AnsiConsole.WriteLine();

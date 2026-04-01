@@ -8,12 +8,12 @@ public interface IHomeScreen : IScreen<HomeScreenInput>
 
 }
 
-public record HomeScreenInput : IScreenInput
+public class HomeScreenInput : ScreenInput, IScreenInput
 {
     public static HomeScreenInput? Default => null;
 }
 
-public class HomeScreen : IHomeScreen
+public class HomeScreen : Screen<HomeScreenInput>, IHomeScreen
 {
     private static readonly Dictionary<string, Page> _options = new Dictionary<string, Page> 
     {
@@ -27,15 +27,15 @@ public class HomeScreen : IHomeScreen
         _navigator = navigator;
     }
 
-    public Task Show(IScreenInput? input, CancellationToken cancellationToken)
+    protected override Task OnShow(IScreenInput? input, CancellationToken cancellationToken)
     {
-        AnsiConsole.Clear();
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title("Welcome Laz, what can I do for you today?")
                 .PageSize(20)
                 .MoreChoicesText("[grey](Move up and down to reveal more options)[/]")
                 .AddChoices(_options.Keys));
+
 
         var target = _options[choice];
 

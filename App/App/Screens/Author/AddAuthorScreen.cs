@@ -9,12 +9,12 @@ public interface IAddAuthorScreen : IScreen<AddAuthorScreenInput>
 
 }
 
-public class AddAuthorScreenInput : IScreenInput
+public class AddAuthorScreenInput : ScreenInput, IScreenInput
 {
     public static AddAuthorScreenInput? Default => null;
 }
 
-public class AddAuthorScreen : IAddAuthorScreen
+public class AddAuthorScreen : Screen<AddAuthorScreenInput>, IAddAuthorScreen
 {
     private readonly IAddService _addService;
     private readonly IAddAuthorScreenNavigator _navigator;
@@ -25,9 +25,8 @@ public class AddAuthorScreen : IAddAuthorScreen
         _navigator = navigator;
     }
 
-    public async Task Show(IScreenInput? input, CancellationToken cancellationToken)
+    protected override async Task OnShow(IScreenInput? input, CancellationToken cancellationToken)
     {
-        AnsiConsole.Clear();
         var name = AnsiConsole.Ask<string>("What is the name of the author you want to add?");
         await _addService.AddAuthor(name, cancellationToken);
 
