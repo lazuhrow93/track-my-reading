@@ -47,7 +47,9 @@ internal class BookDetailsScreen : Screen<BookDetailsInput>, IBookDetailsScreen
     private async Task<BookDetailsOnScreenAction> SelectCharacter(int bookId, string bookTitle, string author, decimal percentageCompleted, CancellationToken cancellationToken)
     {
         var characters = await _characterQueries.ByBookId(bookId, cancellationToken);
+        var choices = BuildChoices(bookId, characters);
 
+        int maxCursor = characters.Count;
         int cursor = 0;
         var returnVal = new BookDetailsOnScreenAction();
 
@@ -63,11 +65,11 @@ internal class BookDetailsScreen : Screen<BookDetailsInput>, IBookDetailsScreen
                     if (key.Key == ConsoleKey.UpArrow)
                         cursor = Math.Max(0, cursor - 1);
                     else if (key.Key == ConsoleKey.DownArrow)
-                        cursor = Math.Min(characters.Count - 1, cursor + 1);
-                    else if (key.Key == ConsoleKey.D1)
                     {
-                        returnVal = BookDetailsOnScreenAction.AddCharacterForBook(bookId);
-                        break;
+                        if (cursor == maxCursor)
+                            cursor = 0;
+                        else
+                            cursor++;
                     }
                     else if (key.Key == ConsoleKey.Escape)
                     {
@@ -76,7 +78,7 @@ internal class BookDetailsScreen : Screen<BookDetailsInput>, IBookDetailsScreen
                     }
                     else if (key.Key == ConsoleKey.Enter)
                     {
-                        returnVal = new BookDetailsOnScreenAction(characters[cursor], null);
+                        returnVal = choices[cursor];
                         break;
                     }
                     else
@@ -95,13 +97,17 @@ internal class BookDetailsScreen : Screen<BookDetailsInput>, IBookDetailsScreen
             .AddColumns(BookDetailsMainTableDescriptor.Columns())
             .Width(Console.WindowWidth);
 
+        table.AddRow(string.Empty, FormatRow("Add Character", cursorIndex == 0), string.Empty);
+
+        table.AddRow("[grey]───[/]", "[grey]───────────────────[/]", "[grey]───────────────[/]");
+
         if (characters == null)
             return table;
 
         for (int i = 0; i < characters.Count; i++)
         {
             var character = characters[i];
-            var isCurrentlySelected = cursorIndex == i;
+            var isCurrentlySelected = cursorIndex == i + 1;
 
             table.AddRow(
                 FormatRow(character.Id.ToString(), isCurrentlySelected),
@@ -109,7 +115,7 @@ internal class BookDetailsScreen : Screen<BookDetailsInput>, IBookDetailsScreen
                 FormatRow(character.Description ?? string.Empty, isCurrentlySelected));
         }
 
-        table.Caption = new TableTitle("[grey]↑↓ navigate   Enter confirm   [[1]] Add Character[/]");
+        table.Caption = new TableTitle("[grey]↑↓ navigate   Enter confirm[/]");
         return table;
     }
 
@@ -125,5 +131,20 @@ internal class BookDetailsScreen : Screen<BookDetailsInput>, IBookDetailsScreen
             true => $"[bold green]{rawString}[/]",
             false => rawString
         };
+    }
+
+    private static List<BookDetailsOnScreenAction> BuildChoices(int bookId, List<Character> characters)
+    {
+        var choices = new List<BookDetailsOnScreenAction>
+        {
+            BookDetailsOnScreenAction.AddCharacterForBook(bookId)
+        };
+
+        foreach (var c in characters)
+        {
+            choices.Add(new BookDetailsOnScreenAction(c.Id, Page.ViewCharacterDetails));
+        }
+
+        return choices;
     }
 }

@@ -43,6 +43,11 @@ public class BookDetailsScreenNavigator : IBookDetailsScreenNavigator
             return screen.Show(input, cancellationToken);
         }
 
+        if (payLoad.TargetPage == Page.ViewCharacterDetails)
+        {
+
+        }
+
         return _serviceProvider.GetRequiredService<IHomeScreen>().Show(HomeScreenInput.Default, cancellationToken);
     }
 }
