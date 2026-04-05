@@ -1,5 +1,4 @@
-﻿using App.Screens.Catalog;
-using Data.CRUD.Read;
+﻿using Data.CRUD.Read;
 using Data.Services;
 using Spectre.Console;
 
@@ -16,6 +15,11 @@ public class AddBookScreenInput : ScreenInput, IScreenInput
     {
         ShouldClear = false
     };
+}
+
+public class AddBookScreenAction
+{
+    public Page TargetPage { get; set; }
 }
 
 public class AddBookScreen : Screen<AddBookScreenInput>, IAddBookScreen
@@ -64,6 +68,11 @@ public class AddBookScreen : Screen<AddBookScreenInput>, IAddBookScreen
         AnsiConsole.WriteLine();
         await Task.Delay(1200, cancellationToken);
 
-        await _navigator.Navigate(Page.ViewCatalog, CatalogScreenInput.Default, cancellationToken);
+        var payload = new AddBookScreenAction()
+        {
+            TargetPage = Page.ViewCatalog
+        };
+
+        await _navigator.Navigate(payload, cancellationToken);
     }
 }

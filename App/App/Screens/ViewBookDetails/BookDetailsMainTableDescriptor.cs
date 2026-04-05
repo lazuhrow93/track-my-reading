@@ -1,6 +1,6 @@
 ﻿using Spectre.Console;
 
-namespace App.Screens.Books;
+namespace App.Screens.ViewBookDetails;
 
 internal class BookDetailsMainTableDescriptor
 {

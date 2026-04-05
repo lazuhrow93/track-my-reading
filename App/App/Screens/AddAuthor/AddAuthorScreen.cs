@@ -1,5 +1,4 @@
-﻿
-using Data.Services;
+﻿using Data.Services;
 using Spectre.Console;
 
 namespace App.Screens.Author;
@@ -9,17 +8,12 @@ public interface IAddAuthorScreen : IScreen<AddAuthorScreenInput>
 
 }
 
-public class AddAuthorScreenInput : ScreenInput, IScreenInput
-{
-    public static AddAuthorScreenInput? Default => null;
-}
-
 public class AddAuthorScreen : Screen<AddAuthorScreenInput>, IAddAuthorScreen
 {
     private readonly IAddService _addService;
-    private readonly IAddAuthorScreenNavigator _navigator;
+    private readonly IAddAuthorNavigator _navigator;
 
-    public AddAuthorScreen(IAddService addService, IAddAuthorScreenNavigator navigator)
+    public AddAuthorScreen(IAddService addService, IAddAuthorNavigator navigator)
     {
         _addService = addService;
         _navigator = navigator;
@@ -30,6 +24,7 @@ public class AddAuthorScreen : Screen<AddAuthorScreenInput>, IAddAuthorScreen
         var name = AnsiConsole.Ask<string>("What is the name of the author you want to add?");
         await _addService.AddAuthor(name, cancellationToken);
 
-        await _navigator.Navigate(Page.ViewCatalog, input, cancellationToken);
+
+        await _navigator.Navigate(new() { TargetPage = Page.ViewCatalog }, cancellationToken);
     }
 }

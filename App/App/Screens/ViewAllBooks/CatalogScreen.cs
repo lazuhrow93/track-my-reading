@@ -1,6 +1,4 @@
-﻿using App.Screens.Books;
-using App.Screens.Catalog.Resolvers;
-using Data.CRUD.Read;
+﻿using Data.CRUD.Read;
 using Database.Entites;
 using Spectre.Console;
 namespace App.Screens.Catalog;
@@ -16,6 +14,13 @@ public class CatalogScreenInput : ScreenInput, IScreenInput
     {
         ShouldClear = true,
     };
+}
+
+public class CatalogScreenAction
+{
+    public Page TargetPage { get; set; }
+
+    public int? BookIdForBookDetails { get; set; }
 }
 
 public class CatalogScreen : Screen<CatalogScreenInput>, ICatalogScreen
@@ -36,11 +41,11 @@ public class CatalogScreen : Screen<CatalogScreenInput>, ICatalogScreen
 
     protected override async Task OnShow(IScreenInput? input, CancellationToken cancellationToken)
     {
-        var choice = await ShowInteractiveBookTable(cancellationToken);
-        await _navigator.Navigate(choice.TargetPage, choice.ScreenInput, cancellationToken);
+        var action = await ShowInteractiveBookTable(cancellationToken);
+        await _navigator.Navigate(action, cancellationToken);
     }
 
-    private async Task<CatalogScreenChoice> ShowInteractiveBookTable(CancellationToken cancellationToken)
+    private async Task<CatalogScreenAction> ShowInteractiveBookTable(CancellationToken cancellationToken)
     {
         var books = await _bookQueries.FetchAllWithAuthorAndStatus(cancellationToken);
         var choices = BuildChoices(books);
@@ -126,24 +131,23 @@ public class CatalogScreen : Screen<CatalogScreenInput>, ICatalogScreen
         };
     }
 
-    private static List<CatalogScreenChoice> BuildChoices(List<Book> books)
+    private static List<CatalogScreenAction> BuildChoices(List<Book> books)
     {
-        var choices = new List<CatalogScreenChoice>
+        var choices = new List<CatalogScreenAction>
         {
-            new CatalogScreenChoice()
+            new CatalogScreenAction()
             {
-                TargetPage = Page.AddBook,
-                ScreenInput = AddBookScreenInput.Default
+                TargetPage = Page.AddBook
             }
         };
 
         //choices for books
         foreach (var b in books)
         {
-            choices.Add(new CatalogScreenChoice()
+            choices.Add(new CatalogScreenAction()
             {
                 TargetPage = Page.BookDetails,
-                ScreenInput = new BookDetailsScreenInput { BookId = b.Id }
+                BookIdForBookDetails = b.Id
             });
         }
         

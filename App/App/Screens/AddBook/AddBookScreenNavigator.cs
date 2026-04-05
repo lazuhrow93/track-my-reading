@@ -2,11 +2,10 @@
 using App.Screens.Catalog;
 using App.Screens.Home;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 
 namespace App.Screens.Books;
 
-public interface IAddBookScreenNavigator : INavigator
+public interface IAddBookScreenNavigator : INavigator<AddBookScreenAction>
 {
 
 }
@@ -20,12 +19,14 @@ public class AddBookScreenNavigator : IAddBookScreenNavigator
         _serviceProvider = serviceProvider;
     }
 
-    public Task Navigate(Page target, IScreenInput? input, CancellationToken cancellationToken)
+    public Task Navigate(AddBookScreenAction? payload, CancellationToken cancellationToken)
     {
-        if (target == Page.ViewCatalog)
+        ArgumentNullException.ThrowIfNull(payload);
+
+        if (payload.TargetPage == Page.ViewCatalog)
         {
             var screen = _serviceProvider.GetRequiredService<ICatalogScreen>();
-            return screen.Show(input, cancellationToken);
+            return screen.Show(CatalogScreenInput.Default, cancellationToken);
         }
         
         return _serviceProvider.GetRequiredService<IHomeScreen>().Show(HomeScreenInput.Default, cancellationToken);

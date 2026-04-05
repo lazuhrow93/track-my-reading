@@ -13,6 +13,11 @@ public class HomeScreenInput : ScreenInput, IScreenInput
     public static HomeScreenInput? Default => null;
 }
 
+public class HomeScreenAction
+{
+    public Page TargetPage { get; set; }
+}
+
 public class HomeScreen : Screen<HomeScreenInput>, IHomeScreen
 {
     private static readonly Dictionary<string, Page> _options = new Dictionary<string, Page> 
@@ -39,14 +44,6 @@ public class HomeScreen : Screen<HomeScreenInput>, IHomeScreen
 
         var target = _options[choice];
 
-        if (target == Page.ViewCatalog)
-        {
-            return _navigator.Navigate(target, CatalogScreenInput.Default, cancellationToken);
-        }
-        else
-        {
-            throw new NotImplementedException();
-        }
-        
+        return _navigator.Navigate(new HomeScreenAction() { TargetPage = target }, cancellationToken);
     }
 }

@@ -1,38 +1,14 @@
-﻿using App.Screens.Catalog;
-using App.Screens.Characters;
-using Data.CRUD.Read;
+﻿using Data.CRUD.Read;
 using Database.Entites;
 using Spectre.Console;
 
-namespace App.Screens.Books;
+namespace App.Screens.ViewBookDetails;
 
-public interface IBookDetailsScreen : IScreen<BookDetailsScreenInput>
+public interface IBookDetailsScreen : IScreen<BookDetailsInput>
 {
 }
 
-public class BookDetailsScreenInput : ScreenInput, IScreenInput
-{
-    public IScreenInput? Default => null;
-
-    public int BookId { get; set; }
-}
-
-public record BookDetailsScreenAction
-{
-    public Character? ChosenCharacter { get; set; }
-
-    public Page? Redirect { get; set; }
-
-    public BookDetailsScreenAction() { }
-
-    public BookDetailsScreenAction(Character? chosenCharacter, Page? redirect)
-    {
-        ChosenCharacter = chosenCharacter;
-        Redirect = redirect;
-    }
-}
-
-internal class BookDetailsScreen : Screen<BookDetailsScreenInput>, IBookDetailsScreen
+internal class BookDetailsScreen : Screen<BookDetailsInput>, IBookDetailsScreen
 {
     private readonly IBookDetailsScreenNavigator _navigator;
     private readonly ICharacterQueries _characterQueries;
@@ -47,7 +23,7 @@ internal class BookDetailsScreen : Screen<BookDetailsScreenInput>, IBookDetailsS
 
     protected override async Task OnShow(IScreenInput? input, CancellationToken cancellationToken)
     {
-        if (input is not BookDetailsScreenInput parsedInput)
+        if (input is not BookDetailsInput parsedInput)
         {
             throw new ArgumentNullException();
         }
@@ -59,28 +35,21 @@ internal class BookDetailsScreen : Screen<BookDetailsScreenInput>, IBookDetailsS
             throw new ArgumentNullException(nameof(Book));
         }
 
-        var result = await SelectCharacter(parsedInput.BookId,
+        var payload = await SelectCharacter(parsedInput.BookId,
             book.Title,
             book.Author!.Name,
             book.ReadingStatus!.Percentage,
             cancellationToken);
 
-        if (result.ChosenCharacter is null)
-        {
-            if (result.Redirect == Page.ViewCatalog)
-                await _navigator.Navigate(Page.ViewCatalog, CatalogScreenInput.Default, cancellationToken);
-            else
-                await _navigator.Navigate(Page.AddCharacter, new AddCharacterScreenInput() { BookId = parsedInput.BookId }, cancellationToken);
-            return;
-        }
+        await _navigator.Navigate(payload, cancellationToken);
     }
 
-    private async Task<BookDetailsScreenAction> SelectCharacter(int bookId, string bookTitle, string author, decimal percentageCompleted, CancellationToken cancellationToken)
+    private async Task<BookDetailsOnScreenAction> SelectCharacter(int bookId, string bookTitle, string author, decimal percentageCompleted, CancellationToken cancellationToken)
     {
         var characters = await _characterQueries.ByBookId(bookId, cancellationToken);
 
         int cursor = 0;
-        var returnVal = new BookDetailsScreenAction();
+        var returnVal = new BookDetailsOnScreenAction();
 
         await AnsiConsole.Live(BuildLiveTable(characters, cursor, bookTitle, author, percentageCompleted))
             .StartAsync(async ctx =>
@@ -97,17 +66,17 @@ internal class BookDetailsScreen : Screen<BookDetailsScreenInput>, IBookDetailsS
                         cursor = Math.Min(characters.Count - 1, cursor + 1);
                     else if (key.Key == ConsoleKey.D1)
                     {
-                        returnVal = new BookDetailsScreenAction(null, Page.AddCharacter);
+                        returnVal = BookDetailsOnScreenAction.AddCharacterForBook(bookId);
                         break;
                     }
                     else if (key.Key == ConsoleKey.Escape)
                     {
-                        returnVal = new BookDetailsScreenAction(null, Page.ViewCatalog);
+                        returnVal = new BookDetailsOnScreenAction(null, Page.ViewCatalog);
                         break;
                     }
                     else if (key.Key == ConsoleKey.Enter)
                     {
-                        returnVal = new BookDetailsScreenAction(characters[cursor], null);
+                        returnVal = new BookDetailsOnScreenAction(characters[cursor], null);
                         break;
                     }
                     else

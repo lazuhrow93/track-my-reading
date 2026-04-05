@@ -13,7 +13,7 @@ public enum Page
     BookDetails,
 }
 
-public interface INavigator
+public interface INavigator<TPayload>
 {
-    Task Navigate(Page target, IScreenInput? input, CancellationToken cancellationToken);
+    Task Navigate(TPayload? payload, CancellationToken cancellationToken);
 }

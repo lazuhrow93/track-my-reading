@@ -4,25 +4,27 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace App.Screens.Author;
 
-public interface IAddAuthorScreenNavigator : INavigator
+public interface IAddAuthorNavigator : INavigator<AddAuthorOnScreenAction>
 {
 
 }
-public class AddAuthorScreenNavigator : IAddAuthorScreenNavigator
+public class AddAuthorNavigator : IAddAuthorNavigator
 {
     private readonly IServiceProvider _serviceProvider;
 
-    public AddAuthorScreenNavigator(IServiceProvider serviceProvider)
+    public AddAuthorNavigator(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
     }
 
-    public Task Navigate(Page target, IScreenInput? input, CancellationToken cancellationToken)
+    public Task Navigate(AddAuthorOnScreenAction? payload, CancellationToken cancellationToken)
     {
-        if (target == Page.ViewCatalog)
+        ArgumentNullException.ThrowIfNull(payload);
+        
+        if (payload.TargetPage == Page.ViewCatalog)
         {
             var catalogScreen = _serviceProvider.GetRequiredService<ICatalogScreen>();
-            return catalogScreen.Show(input, cancellationToken);
+            return catalogScreen.Show(CatalogScreenInput.Default, cancellationToken);
         }
 
         return _serviceProvider.GetRequiredService<IHomeScreen>().Show(HomeScreenInput.Default, cancellationToken);

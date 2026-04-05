@@ -1,8 +1,9 @@
 ﻿using App.Screens.Author;
 using App.Screens.Books;
 using App.Screens.Catalog;
-using App.Screens.Characters;
+using App.Screens.AddCharacter;
 using App.Screens.Home;
+using App.Screens.ViewBookDetails;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace App.Configuration;
@@ -27,7 +28,7 @@ public static class Screens
     {
         return services.AddScoped<IHomeScreenNavigator, HomeScreenNavigator>()
             .AddScoped<ICatalogScreenNavigator, CatalogScreenNavigator>()
-            .AddScoped<IAddAuthorScreenNavigator, AddAuthorScreenNavigator>()
+            .AddScoped<IAddAuthorNavigator, AddAuthorNavigator>()
             .AddScoped<IAddBookScreenNavigator, AddBookScreenNavigator>()
             .AddScoped<IAddCharacterScreenNavigator, AddCharacterScreenNavigator>()
             .AddScoped<IBookDetailsScreenNavigator, BookDetailsScreenNavigator>();

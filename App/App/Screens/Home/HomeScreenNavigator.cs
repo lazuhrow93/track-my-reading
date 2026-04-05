@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace App.Screens.Home;
 
-public interface IHomeScreenNavigator : INavigator
+public interface IHomeScreenNavigator : INavigator<HomeScreenAction>
 {
 
 }
@@ -17,14 +17,16 @@ public class HomeScreenNavigator : IHomeScreenNavigator
         _serviceProvider = serviceProvider;
     }
 
-    public Task Navigate(Page target, IScreenInput? input, CancellationToken cancellationToken)
+    public Task Navigate(HomeScreenAction? payload, CancellationToken cancellationToken)
     {
-        if (target == Page.ViewCatalog)
+        ArgumentNullException.ThrowIfNull(payload);
+
+        if (payload.TargetPage == Page.ViewCatalog)
         {
             var screen = _serviceProvider.GetRequiredService<ICatalogScreen>();
-            return screen.Show(input, cancellationToken);
+            return screen.Show(CatalogScreenInput.Default, cancellationToken);
         }
 
-        return _serviceProvider.GetRequiredService<IHomeScreen>().Show(input, cancellationToken);
+        return _serviceProvider.GetRequiredService<IHomeScreen>().Show(HomeScreenInput.Default, cancellationToken);
     }
 }
