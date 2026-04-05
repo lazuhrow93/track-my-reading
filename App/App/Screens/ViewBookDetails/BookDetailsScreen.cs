@@ -73,7 +73,7 @@ internal class BookDetailsScreen : Screen<BookDetailsInput>, IBookDetailsScreen
                     }
                     else if (key.Key == ConsoleKey.Escape)
                     {
-                        returnVal = new BookDetailsOnScreenAction(null, Page.ViewCatalog);
+                        returnVal = BookDetailsOnScreenAction.BackToCatalog();
                         break;
                     }
                     else if (key.Key == ConsoleKey.Enter)
@@ -142,7 +142,7 @@ internal class BookDetailsScreen : Screen<BookDetailsInput>, IBookDetailsScreen
 
         foreach (var c in characters)
         {
-            choices.Add(new BookDetailsOnScreenAction(c.Id, Page.ViewCharacterDetails));
+            choices.Add(BookDetailsOnScreenAction.ViewCharacterDetails(c));
         }
 
         return choices;

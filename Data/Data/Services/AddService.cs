@@ -9,6 +9,7 @@ public interface IAddService
     Task<bool> AddBook(string title, string author, CancellationToken cancellationToken);
     Task<bool> AddAuthor(string name, CancellationToken cancellationToken);
     Task<bool> AddCharacter(string name, string? description, int bookId, CancellationToken cancellationToken);
+    Task<bool> AddNote(string value, int characterId, CancellationToken cancellationToken);
 }
 
 public class AddService : IAddService
@@ -19,13 +20,15 @@ public class AddService : IAddService
     private readonly IRepository<Book> _bookRepository;
     private readonly IRepository<Author> _authorRepository;
     private readonly IRepository<Character> _characterRepository;
+    private readonly IRepository<Note> _noteRepository;
 
     public AddService(IBookQueries bookQueries,
         IAuthorQueries authorQueries,
         ICharacterQueries characterQueries,
         IRepository<Book> bookRepository,
         IRepository<Author> authorRepository,
-        IRepository<Character> characterRepository)
+        IRepository<Character> characterRepository,
+        IRepository<Note> noteRepository)
     {
         _bookQueries = bookQueries;
         _authorQueries = authorQueries;
@@ -33,6 +36,7 @@ public class AddService : IAddService
         _bookRepository = bookRepository;
         _authorRepository = authorRepository;
         _characterRepository = characterRepository;
+        _noteRepository = noteRepository;
     }
 
     public async Task<bool> AddBook(string title, string author, CancellationToken cancellationToken)
@@ -105,5 +109,17 @@ public class AddService : IAddService
         };
 
         return await _characterRepository.Add(newCharacter, cancellationToken);
+    }
+
+    public Task<bool> AddNote(string value, int characterId, CancellationToken cancellationToken)
+    {
+        var note = new Note
+        {
+            Value = value,
+            CharacterId = characterId,
+            CreatedUtc = DateTime.UtcNow
+        };
+
+        return _noteRepository.Add(note, cancellationToken);
     }
 }

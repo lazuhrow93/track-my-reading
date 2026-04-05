@@ -7,3 +7,11 @@ dotnet ef migrations add "InitializeUserTables" --startup-project ..\AbstractDev
 -- To Update the Database --
 
 dotnet ef database update "20250823044826_InitializeUserTables" --startup-project ..\AbstractDevelopment.WebApp --project ..\AbstractDevelopment.BackEnd
+
+
+
+Notes:
+- For Track My Reading:
+	- I had to be in the directory right below the repo name
+
+	- dotnet ef migrations add "Adding_Note_And_Trait" --startup-project .\App\App --project .\Database

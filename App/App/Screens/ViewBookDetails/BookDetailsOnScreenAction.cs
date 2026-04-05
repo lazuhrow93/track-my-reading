@@ -1,8 +1,10 @@
-﻿namespace App.Screens.ViewBookDetails;
+﻿using Database.Entites;
+
+namespace App.Screens.ViewBookDetails;
 
 public record BookDetailsOnScreenAction
 {
-    public int? ChosenCharacterId { get; set; }
+    public Character? ChosenCharacter { get; set; }
 
     public int? BookIdToAddCharacter { get; set; }
 
@@ -10,11 +12,13 @@ public record BookDetailsOnScreenAction
 
     public BookDetailsOnScreenAction() { }
 
-    public BookDetailsOnScreenAction(int? chosenCharacterId, Page? redirect)
+    public static BookDetailsOnScreenAction BackToCatalog() => new BookDetailsOnScreenAction() { TargetPage = Page.ViewCatalog };
+
+    public static BookDetailsOnScreenAction ViewCharacterDetails(Character character) => new BookDetailsOnScreenAction()
     {
-        ChosenCharacterId = chosenCharacterId;
-        TargetPage = redirect;
-    }
+        ChosenCharacter = character,
+        TargetPage = Page.ViewCharacterDetails
+    };
 
     public static BookDetailsOnScreenAction AddCharacterForBook(int bookId) => new BookDetailsOnScreenAction()
     {

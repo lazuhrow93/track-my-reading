@@ -1,6 +1,7 @@
 ﻿using App.Screens.Catalog;
 using App.Screens.AddCharacter;
 using App.Screens.Home;
+using App.Screens.ViewCharacterDetailsScreen;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace App.Screens.ViewBookDetails;
@@ -45,7 +46,16 @@ public class BookDetailsScreenNavigator : IBookDetailsScreenNavigator
 
         if (payLoad.TargetPage == Page.ViewCharacterDetails)
         {
+            if (payLoad.ChosenCharacter == null)
+                throw new ArgumentNullException(nameof(payLoad.ChosenCharacter));
 
+            var screen = _serviceProvider.GetRequiredService<IViewCharacterDetailsScreen>();
+            return screen.Show(new ViewCharacterDetailsScreenInput
+            {
+                CharacterId = payLoad.ChosenCharacter.Id,
+                CharacterName = payLoad.ChosenCharacter.Name,
+                ShouldClear = true
+            }, cancellationToken);
         }
 
         return _serviceProvider.GetRequiredService<IHomeScreen>().Show(HomeScreenInput.Default, cancellationToken);
