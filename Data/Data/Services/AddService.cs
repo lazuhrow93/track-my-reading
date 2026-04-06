@@ -1,6 +1,8 @@
 ﻿using Data.CRUD.Create;
 using Data.CRUD.Read;
+using Database;
 using Database.Entites;
+using Microsoft.EntityFrameworkCore;
 
 namespace Data.Services;
 
@@ -10,6 +12,7 @@ public interface IAddService
     Task<bool> AddAuthor(string name, CancellationToken cancellationToken);
     Task<bool> AddCharacter(string name, string? description, int bookId, CancellationToken cancellationToken);
     Task<bool> AddNote(string value, int characterId, CancellationToken cancellationToken);
+    Task<bool> AddTraitToCharacter(int characterId, int traitId, CancellationToken cancellationToken);
 }
 
 public class AddService : IAddService
@@ -21,6 +24,7 @@ public class AddService : IAddService
     private readonly IRepository<Author> _authorRepository;
     private readonly IRepository<Character> _characterRepository;
     private readonly IRepository<Note> _noteRepository;
+    private readonly AppDbContext _context;
 
     public AddService(IBookQueries bookQueries,
         IAuthorQueries authorQueries,
@@ -28,7 +32,8 @@ public class AddService : IAddService
         IRepository<Book> bookRepository,
         IRepository<Author> authorRepository,
         IRepository<Character> characterRepository,
-        IRepository<Note> noteRepository)
+        IRepository<Note> noteRepository,
+        AppDbContext context)
     {
         _bookQueries = bookQueries;
         _authorQueries = authorQueries;
@@ -37,6 +42,7 @@ public class AddService : IAddService
         _authorRepository = authorRepository;
         _characterRepository = characterRepository;
         _noteRepository = noteRepository;
+        _context = context;
     }
 
     public async Task<bool> AddBook(string title, string author, CancellationToken cancellationToken)
@@ -121,5 +127,21 @@ public class AddService : IAddService
         };
 
         return _noteRepository.Add(note, cancellationToken);
+    }
+
+    public async Task<bool> AddTraitToCharacter(int characterId, int traitId, CancellationToken cancellationToken)
+    {
+        var character = await _context.Set<Character>()
+            .Include(c => c.Traits)
+            .FirstOrDefaultAsync(c => c.Id == characterId, cancellationToken);
+
+        if (character == null) return false;
+
+        var trait = await _context.Set<Trait>().FindAsync([traitId], cancellationToken);
+
+        if (trait == null) return false;
+
+        character.Traits!.Add(trait);
+        return await _context.SaveChangesAsync(cancellationToken) > 0;
     }
 }

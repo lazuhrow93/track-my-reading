@@ -11,7 +11,8 @@ public static class DependencyInjection
     {
         return services.AddScoped<IBookQueries, BookQueries>()
             .AddScoped<IAuthorQueries, AuthorQueries>()
-            .AddScoped<ICharacterQueries, CharacterQueries>();
+            .AddScoped<ICharacterQueries, CharacterQueries>()
+            .AddScoped<ITraitQuieries, TraitQueries>();
     }
 
     public static IServiceCollection AddRepositories(this IServiceCollection services)
