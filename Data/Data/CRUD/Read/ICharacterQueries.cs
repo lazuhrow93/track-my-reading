@@ -11,7 +11,9 @@ public interface ICharacterQueries : IEntityQueries<Character>
     Task<List<Character>> ByBookId(int bookId, CancellationToken cancellationToken);
 
     Task<Character?> GetByIdWithTraitsAndBook(int id, CancellationToken cancellationToken);
+
     Task<List<Character>> GetByBookIdFilteredByTraits(int bookId, List<int> traitIds, CancellationToken cancellationToken);
+
     Task<List<Character>> GetByBookIdWithTraits(int bookId, CancellationToken cancellationToken);
 }
 
