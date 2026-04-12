@@ -12,6 +12,7 @@ public enum Page
     AddCharacter,
     BookDetails,
     ViewCharacterDetails,
+    SearchForCharacter,
 }
 
 public interface INavigator<TPayload>

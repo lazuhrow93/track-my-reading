@@ -140,9 +140,12 @@ public class ViewCharacterDetailsScreen : Screen<ViewCharacterDetailsScreenInput
             .Expand();
 
         var totalTraits = character.Traits?.Count ?? 0;
+        var renderedTraits = character.Traits!
+            .Select(t => (IRenderable)new Markup($"  [green]•[/] {Markup.Escape(t.Description)}"))
+            .ToList();
 
-        var traitsContent = totalTraits > 0
-            ? (IRenderable)new Rows(character.Traits.Select(t => (IRenderable)new Markup($"  [green]â€¢[/] {Markup.Escape(t.Description)}")).ToArray())
+        var traitsContent = renderedTraits.Count > 0
+            ? (IRenderable)new Rows(renderedTraits)
             : new Markup(string.Empty);
 
         var traitsPanel = new Panel(traitsContent)

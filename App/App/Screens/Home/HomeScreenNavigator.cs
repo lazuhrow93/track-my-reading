@@ -1,4 +1,5 @@
 ﻿using App.Screens.Catalog;
+using App.Screens.SearchForCharacter;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace App.Screens.Home;
@@ -25,6 +26,12 @@ public class HomeScreenNavigator : IHomeScreenNavigator
         {
             var screen = _serviceProvider.GetRequiredService<ICatalogScreen>();
             return screen.Show(CatalogScreenInput.Default, cancellationToken);
+        }
+
+        if (payload.TargetPage == Page.SearchForCharacter)
+        {
+            var screen = _serviceProvider.GetRequiredService<ISearchForCharacterScreen>();
+            return screen.Show(SearchForCharacterScreenInput.Default, cancellationToken);
         }
 
         return _serviceProvider.GetRequiredService<IHomeScreen>().Show(HomeScreenInput.Default, cancellationToken);

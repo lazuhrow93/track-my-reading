@@ -20,9 +20,10 @@ public class HomeScreenAction
 
 public class HomeScreen : Screen<HomeScreenInput>, IHomeScreen
 {
-    private static readonly Dictionary<string, Page> _options = new Dictionary<string, Page> 
+    private static readonly Dictionary<string, Page> _options = new Dictionary<string, Page>
     {
-        { "View Your Catalog", Page.ViewCatalog }
+        { "View Your Catalog", Page.ViewCatalog },
+        { "Search For Character", Page.SearchForCharacter }
     };
 
     private readonly IHomeScreenNavigator _navigator;

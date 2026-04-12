@@ -19,7 +19,7 @@ public class Program
             e.Cancel = true;
             cts.Cancel();
         };
-
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
         var provider = SetupDI();
         var menu = provider.GetRequiredService<IHomeScreen>();
         await menu.Show(HomeScreenInput.Default, cts.Token);
