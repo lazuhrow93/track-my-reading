@@ -2,6 +2,7 @@
   <Project Path="../Data/Data/Data.csproj" Id="1264ac68-3c97-4c9c-a24d-452c4b9b3e06" />
   <Project Path="../Database/Database.csproj" />
   <Project Path="App/App.csproj" />
+  <Project Path="Api/Api.csproj" />
   <Project Path="MobileApp/MobileApp.csproj" Id="b20712fa-14fe-4e6d-8151-e6dfc9cfe1ff">
     <Deploy Solution="Debug|*" />
   </Project>
