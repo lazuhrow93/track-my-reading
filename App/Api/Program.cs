@@ -12,5 +12,6 @@ builder.Services
 
 var app = builder.Build();
 
+app.MapBookEndpoints();
 
 app.Run();

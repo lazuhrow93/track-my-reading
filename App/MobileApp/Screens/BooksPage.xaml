@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MobileApp.Screens.BooksPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="My Books">
+
+    <Grid>
+        <CollectionView x:Name="BooksCollection" Margin="16">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="4,6,4,12">
+                        <Border StrokeShape="RoundRectangle 8" Stroke="Transparent">
+                            <Border.Shadow>
+                                <Shadow Brush="Black" Offset="0,4" Radius="8" Opacity="0.3" />
+                            </Border.Shadow>
+                        </Border>
+                        <Border Padding="16" StrokeShape="RoundRectangle 8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Spacing="4" Grid.Column="0">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="16"
+                                    Text="{Binding Title}" />
+                                <Label
+                                    FontSize="14"
+                                    Text="{Binding Author}"
+                                    TextColor="{AppThemeBinding Dark=LightGray, Light=Gray}" />
+                                <HorizontalStackLayout Spacing="8">
+                                    <Label
+                                        FontSize="12"
+                                        Text="{Binding ReadingState}"
+                                        TextColor="{AppThemeBinding Dark=LightGray, Light=DimGray}" />
+                                    <Label
+                                        FontSize="12"
+                                        Text="{Binding Percentage, StringFormat='{0}%'}"
+                                        TextColor="{AppThemeBinding Dark=LightGray, Light=DimGray}" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                            <Button
+                                Grid.Column="1"
+                                Text="View"
+                                VerticalOptions="Center"
+                                Clicked="OnViewCharactersClicked"
+                                CommandParameter="{Binding Id}" />
+                        </Grid>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <ActivityIndicator
+            x:Name="LoadingIndicator"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            IsVisible="False"
+            IsRunning="False" />
+    </Grid>
+
+</ContentPage>

@@ -1,0 +1,8 @@
+namespace MobileApp.Models;
+
+public class CharacterSummary
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = null!;
+    public string Description { get; set; } = string.Empty;
+}
