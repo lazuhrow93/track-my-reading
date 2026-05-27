@@ -23,7 +23,7 @@ public static class MauiProgram
         builder.Configuration.AddUserSecrets<App>();
 #endif
 
-        var baseUrl = builder.Configuration["Api:BaseUrl"] ?? "http://10.0.2.2:63105";
+        var baseUrl = builder.Configuration["Api:BaseUrl"];
 
         builder.Services.AddHttpClient<BooksService>(client =>
         {
