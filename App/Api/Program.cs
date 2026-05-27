@@ -15,5 +15,6 @@ builder.Services
 var app = builder.Build();
 
 app.MapBookEndpoints();
+app.MapGet("/health", () => Results.Ok("healthy"));
 
 app.Run();

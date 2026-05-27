@@ -22,4 +22,17 @@ public class BooksService(HttpClient httpClient)
         var response = await httpClient.PostAsJsonAsync("/book/character", model, cancellationToken);
         return response.IsSuccessStatusCode;
     }
+
+    public async Task<bool> IsHealthyAsync()
+    {
+        try
+        {
+            var response = await httpClient.GetAsync("/health");
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }

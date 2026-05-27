@@ -28,7 +28,7 @@
 		<MauiXamlInflator>SourceGen</MauiXamlInflator>
 
 		<!-- Display name -->
-		<ApplicationTitle>MobileApp</ApplicationTitle>
+		<ApplicationTitle>Track</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.companyname.mobileapp</ApplicationId>
