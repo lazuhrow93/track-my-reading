@@ -15,6 +15,11 @@ public partial class CharactersPage : ContentPage
         _viewModel = viewModel;
     }
 
+    private async void OnAddCharacterClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync($"AddCharacterPage?bookId={BookId}");
+    }
+
     protected override async void OnAppearing()
     {
         base.OnAppearing();

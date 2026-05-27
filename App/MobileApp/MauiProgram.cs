@@ -19,9 +19,10 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-#if DEBUG
-        builder.Configuration.AddUserSecrets<App>();
-#endif
+        var assembly = typeof(App).Assembly;
+        using var stream = assembly.GetManifestResourceStream("MobileApp.appsettings.json");
+        if (stream is not null)
+            builder.Configuration.AddJsonStream(stream);
 
         var baseUrl = builder.Configuration["Api:BaseUrl"];
 
@@ -34,6 +35,7 @@ public static class MauiProgram
         builder.Services.AddTransient<BooksPage>();
         builder.Services.AddTransient<CharactersViewModel>();
         builder.Services.AddTransient<CharactersPage>();
+        builder.Services.AddTransient<AddCharacterPage>();
 
 #if DEBUG
 		builder.Logging.AddDebug();

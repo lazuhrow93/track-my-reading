@@ -56,6 +56,22 @@
             VerticalOptions="Center"
             IsVisible="False"
             IsRunning="False" />
+
+        <VerticalStackLayout
+            x:Name="ErrorPanel"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Spacing="16"
+            IsVisible="False">
+            <Label
+                Text="Could not connect to the server."
+                HorizontalOptions="Center"
+                TextColor="Gray" />
+            <Button
+                Text="Try Again"
+                HorizontalOptions="Center"
+                Clicked="OnTryAgainClicked" />
+        </VerticalStackLayout>
     </Grid>
 
 </ContentPage>
