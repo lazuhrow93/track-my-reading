@@ -31,6 +31,17 @@
             VerticalOptions="Center"
             IsVisible="False"
             IsRunning="False" />
+
+        <Button
+            Text="+"
+            FontSize="32"
+            WidthRequest="64"
+            HeightRequest="64"
+            CornerRadius="32"
+            HorizontalOptions="End"
+            VerticalOptions="End"
+            Margin="0,0,24,32"
+            Clicked="OnAddCharacterClicked" />
     </Grid>
 
 </ContentPage>

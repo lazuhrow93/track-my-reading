@@ -16,4 +16,10 @@ public class BooksService(HttpClient httpClient)
         var characters = await httpClient.GetFromJsonAsync<List<CharacterSummary>>($"/book/{bookId}/characters", cancellationToken);
         return characters ?? [];
     }
+
+    public async Task<bool> AddCharacterAsync(AddCharacterModel model, CancellationToken cancellationToken = default)
+    {
+        var response = await httpClient.PostAsJsonAsync("/book/character", model, cancellationToken);
+        return response.IsSuccessStatusCode;
+    }
 }

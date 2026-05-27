@@ -1,5 +1,6 @@
 using Api.Models;
 using Data.CRUD.Read;
+using Data.Services;
 
 namespace Api.Endpoints;
 
@@ -33,6 +34,16 @@ public static class BookEndpoints
             });
 
             return Results.Ok(results);
+        });
+
+        app.MapPost("book/character", async (AddCharacterModel model, IAddService addService, CancellationToken cancellationToken) =>
+        {
+            var success = await addService.AddCharacter(model.Name, model.Description, model.BookId, cancellationToken);
+            if (!success)
+            {
+                return Results.BadRequest();
+            }
+            return Results.Ok();
         });
 
         return app;
