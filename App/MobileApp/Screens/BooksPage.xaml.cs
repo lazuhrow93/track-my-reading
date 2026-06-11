@@ -18,10 +18,17 @@ public partial class BooksPage : ContentPage
             await Shell.Current.GoToAsync($"CharactersPage?bookId={bookId}");
     }
 
+    private async void OnTryAgainClicked(object sender, EventArgs e) => await LoadBooksAsync();
+
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        await LoadBooksAsync();
+    }
 
+    private async Task LoadBooksAsync()
+    {
+        ErrorPanel.IsVisible = false;
         LoadingIndicator.IsVisible = true;
         LoadingIndicator.IsRunning = true;
 
@@ -30,9 +37,9 @@ public partial class BooksPage : ContentPage
             await _viewModel.LoadAsync();
             BooksCollection.ItemsSource = _viewModel.Books;
         }
-        catch (Exception ex)
+        catch
         {
-            await DisplayAlert("Error", $"Failed to load books: {ex.Message}", "OK");
+            ErrorPanel.IsVisible = true;
         }
         finally
         {
