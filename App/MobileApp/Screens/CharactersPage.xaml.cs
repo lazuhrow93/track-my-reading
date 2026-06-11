@@ -1,3 +1,4 @@
+using MobileApp.Models;
 using MobileApp.ViewModels;
 
 namespace MobileApp.Screens;
@@ -18,6 +19,19 @@ public partial class CharactersPage : ContentPage
     private async void OnAddCharacterClicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync($"AddCharacterPage?bookId={BookId}");
+    }
+
+    private async void OnCharacterSelected(object sender, SelectionChangedEventArgs e)
+    {
+        if (e.CurrentSelection.FirstOrDefault() is not CharacterSummary character)
+            return;
+
+        ((CollectionView)sender).SelectedItem = null;
+
+        await Shell.Current.GoToAsync(
+            $"CharacterProfilePage?characterId={character.Id}" +
+            $"&characterName={Uri.EscapeDataString(character.Name)}" +
+            $"&characterDescription={Uri.EscapeDataString(character.Description)}");
     }
 
     protected override async void OnAppearing()

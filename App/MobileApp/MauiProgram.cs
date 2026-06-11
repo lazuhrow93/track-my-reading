@@ -36,6 +36,7 @@ public static class MauiProgram
         builder.Services.AddTransient<CharactersViewModel>();
         builder.Services.AddTransient<CharactersPage>();
         builder.Services.AddTransient<AddCharacterPage>();
+        builder.Services.AddTransient<CharacterProfilePage>();
 
 #if DEBUG
 		builder.Logging.AddDebug();

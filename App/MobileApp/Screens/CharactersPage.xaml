@@ -6,7 +6,11 @@
     Title="Characters">
 
     <Grid>
-        <CollectionView x:Name="CharactersCollection" Margin="16">
+        <CollectionView
+            x:Name="CharactersCollection"
+            Margin="16"
+            SelectionMode="Single"
+            SelectionChanged="OnCharacterSelected">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Border Margin="0,6" Padding="16" StrokeShape="RoundRectangle 8">
