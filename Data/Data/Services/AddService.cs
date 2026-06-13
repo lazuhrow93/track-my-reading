@@ -100,12 +100,6 @@ public class AddService : IAddService
 
     public async Task<bool> AddCharacter(string name, string? description, int bookId, CancellationToken cancellationToken)
     {
-        var exists = await _characterQueries.CharacterExists(name, bookId, cancellationToken);
-        if (exists)
-        {
-            return false;
-        }
-
         var newCharacter = new Character()
         {
             Name = name,

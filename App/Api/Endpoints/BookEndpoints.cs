@@ -8,6 +8,14 @@ public static class BookEndpoints
 {
     public static IEndpointRouteBuilder MapBookEndpoints(this IEndpointRouteBuilder app)
     {
+        app.EditCharacterEndpoint();
+        app.AddNotesEndpoint();
+        app.MapFetch();
+        return app;
+    }
+
+    private static IEndpointRouteBuilder MapFetch(this IEndpointRouteBuilder app)
+    {
         app.MapGet("/books", async (IBookQueries bookQueries, CancellationToken cancellationToken) =>
         {
             var books = await bookQueries.FetchAllWithAuthorAndStatus(cancellationToken);
@@ -28,7 +36,7 @@ public static class BookEndpoints
 
             var results = chars.Select(c => new CharacterSummary()
             {
-                Id = id,
+                Id = c.Id,
                 Name = c.Name,
                 Description = c.Description ?? string.Empty
             });
@@ -44,6 +52,40 @@ public static class BookEndpoints
                 return Results.BadRequest();
             }
             return Results.Ok();
+        });
+
+        return app;
+    }
+
+    private static IEndpointRouteBuilder EditCharacterEndpoint(this IEndpointRouteBuilder app)
+    {
+        app.MapPut("characters/{id}", async (int id, EditCharacterModel model, IEditService editService, CancellationToken cancellationToken) =>
+        {
+            var success = await editService.EditCharacter(id, model.Name, cancellationToken);
+
+            if (!success)
+            {
+                return Results.BadRequest();
+            }
+            return Results.Ok();
+
+        });
+
+        return app;
+    }
+
+    private static IEndpointRouteBuilder AddNotesEndpoint(this IEndpointRouteBuilder app)
+    {
+        app.MapPost("notes/character/{id}", async (int id, AddNoteModel model, IAddService addService, CancellationToken cancellationToken) =>
+        {
+            var success = await addService.AddNote(model.Value, id, cancellationToken);
+
+            if (!success)
+            {
+                return Results.BadRequest();
+            }
+            return Results.Ok();
+
         });
 
         return app;

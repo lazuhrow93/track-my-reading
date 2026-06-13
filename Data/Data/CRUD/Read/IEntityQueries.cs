@@ -7,7 +7,7 @@ namespace Data.CRUD.Read;
 public interface IEntityQueries<TEntity>
     where TEntity : Entity
 {
-    Task<TEntity?> GetById(int id);
+    Task<TEntity?> GetById(int id, CancellationToken cancellationToken);
 }
 
 public abstract class EntityQueriesBase<TEntity> : IEntityQueries<TEntity>
@@ -20,10 +20,10 @@ public abstract class EntityQueriesBase<TEntity> : IEntityQueries<TEntity>
         _context = context;
     }
 
-    protected IQueryable<TEntity> Query => _context.Set<TEntity>().AsNoTracking();
+    protected IQueryable<TEntity> Query => _context.Set<TEntity>();
 
-    public Task<TEntity?> GetById(int id)
+    public Task<TEntity?> GetById(int id, CancellationToken cancellationToken)
     {
-        return Query.FirstOrDefaultAsync(e => e.Id == id);
+        return Query.FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
     }
 }

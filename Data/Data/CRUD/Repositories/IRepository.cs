@@ -7,6 +7,8 @@ public interface IRepository<T>
     where T : Entity
 {
     Task<bool> Add(T entity, CancellationToken cancellationToken);
+
+    Task<int> SaveChanges(CancellationToken cancellationToken);
 }
 
 public class Repository<T> : IRepository<T>
@@ -21,6 +23,12 @@ public class Repository<T> : IRepository<T>
     public async Task<bool> Add(T entity, CancellationToken cancellationToken)
     {
         await _context.Set<T>().AddAsync(entity, cancellationToken);
-        return await _context.SaveChangesAsync(cancellationToken) > 0;
+        var totalEntries = await SaveChanges(cancellationToken);
+        return totalEntries > 0;
+    }
+
+    public async Task<int> SaveChanges(CancellationToken cancellationToken)
+    {
+        return await _context.SaveChangesAsync(cancellationToken);
     }
 }

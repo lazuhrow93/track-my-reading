@@ -23,6 +23,13 @@ public class BooksService(HttpClient httpClient)
         return response.IsSuccessStatusCode;
     }
 
+    public async Task<bool> EditCharacterAsync(int id, string name, CancellationToken cancellationToken = default)
+    {
+        var model = new EditCharacterModel { Name = name };
+        var response = await httpClient.PutAsJsonAsync($"/characters/{id}", model, cancellationToken);
+        return response.IsSuccessStatusCode;
+    }
+
     public async Task<bool> IsHealthyAsync()
     {
         try

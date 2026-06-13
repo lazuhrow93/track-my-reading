@@ -1,5 +1,6 @@
 ﻿using Data.CRUD.Create;
 using Data.CRUD.Read;
+using Data.CRUD.Repositories;
 using Data.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,11 +18,13 @@ public static class DependencyInjection
 
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        return services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        return services.AddScoped(typeof(IRepository<>), typeof(Repository<>))
+            .AddScoped<ICharacterRepository, CharacterRepository>();
     }
 
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
-        return services.AddScoped<IAddService, AddService>();
+        return services.AddScoped<IAddService, AddService>()
+            .AddScoped<IEditService, EditService>();
     }
 }
