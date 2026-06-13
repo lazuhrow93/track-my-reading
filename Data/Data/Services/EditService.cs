@@ -1,8 +1,5 @@
 ﻿using Data.CRUD.Read;
 using Data.CRUD.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Data.Services;
 
@@ -34,7 +31,7 @@ public class EditService : IEditService
         }
 
         character.Name = name;
-        return await _characterRepository.Update(character, cancellationToken);
+        return await _characterRepository.SaveChanges(cancellationToken) == 1; //since we updated one thing.
         
     }
 

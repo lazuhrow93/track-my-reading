@@ -9,6 +9,7 @@ public static class BookEndpoints
     public static IEndpointRouteBuilder MapBookEndpoints(this IEndpointRouteBuilder app)
     {
         app.EditCharacterEndpoint();
+        app.AddNotesEndpoint();
         app.MapFetch();
         return app;
     }
@@ -61,6 +62,23 @@ public static class BookEndpoints
         app.MapPut("characters/{id}", async (int id, EditCharacterModel model, IEditService editService, CancellationToken cancellationToken) =>
         {
             var success = await editService.EditCharacter(id, model.Name, cancellationToken);
+
+            if (!success)
+            {
+                return Results.BadRequest();
+            }
+            return Results.Ok();
+
+        });
+
+        return app;
+    }
+
+    private static IEndpointRouteBuilder AddNotesEndpoint(this IEndpointRouteBuilder app)
+    {
+        app.MapPost("notes/character/{id}", async (int id, AddNoteModel model, IAddService addService, CancellationToken cancellationToken) =>
+        {
+            var success = await addService.AddNote(model.Value, id, cancellationToken);
 
             if (!success)
             {

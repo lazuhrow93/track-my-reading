@@ -5,47 +5,62 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Characters">
 
-    <Grid>
+    <Grid RowDefinitions="*,Auto">
         <CollectionView
+            Grid.Row="0"
             x:Name="CharactersCollection"
             Margin="16"
             SelectionMode="Single"
             SelectionChanged="OnCharacterSelected">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Border Margin="0,6" Padding="16" StrokeShape="RoundRectangle 8">
-                        <VerticalStackLayout Spacing="4">
+                    <Border
+                        Margin="0,6"
+                        Padding="16"
+                        StrokeShape="RoundRectangle 8"
+                        Stroke="{AppThemeBinding Dark=#444, Light=#DDD}">
+                        <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                            <VerticalStackLayout Grid.Column="0" Spacing="4">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="16"
+                                    Text="{Binding Name}" />
+                                <Label
+                                    FontSize="14"
+                                    Text="{Binding Description}"
+                                    TextColor="{AppThemeBinding Dark=LightGray, Light=Gray}" />
+                            </VerticalStackLayout>
                             <Label
-                                FontAttributes="Bold"
-                                FontSize="16"
-                                Text="{Binding Name}" />
-                            <Label
-                                FontSize="14"
-                                Text="{Binding Description}"
+                                Grid.Column="1"
+                                Text="›"
+                                FontSize="24"
+                                VerticalOptions="Center"
+                                Margin="12,0,0,0"
                                 TextColor="{AppThemeBinding Dark=LightGray, Light=Gray}" />
-                        </VerticalStackLayout>
+                        </Grid>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
         <ActivityIndicator
+            Grid.Row="0"
             x:Name="LoadingIndicator"
             HorizontalOptions="Center"
             VerticalOptions="Center"
             IsVisible="False"
             IsRunning="False" />
 
-        <Button
-            Text="+"
-            FontSize="32"
-            WidthRequest="64"
-            HeightRequest="64"
-            CornerRadius="32"
-            HorizontalOptions="End"
-            VerticalOptions="End"
-            Margin="0,0,24,32"
-            Clicked="OnAddCharacterClicked" />
+        <Border
+            Grid.Row="1"
+            Padding="16,12"
+            Stroke="{AppThemeBinding Dark=#444, Light=#DDD}"
+            StrokeShape="Rectangle">
+            <Button
+                Text="Add Character"
+                HorizontalOptions="Fill"
+                Clicked="OnAddCharacterClicked" />
+        </Border>
     </Grid>
 
 </ContentPage>

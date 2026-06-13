@@ -20,7 +20,7 @@ public abstract class EntityQueriesBase<TEntity> : IEntityQueries<TEntity>
         _context = context;
     }
 
-    protected IQueryable<TEntity> Query => _context.Set<TEntity>().AsNoTracking();
+    protected IQueryable<TEntity> Query => _context.Set<TEntity>();
 
     public Task<TEntity?> GetById(int id, CancellationToken cancellationToken)
     {
