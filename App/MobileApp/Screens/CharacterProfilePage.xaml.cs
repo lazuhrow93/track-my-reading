@@ -50,10 +50,24 @@ public partial class CharacterProfilePage : ContentPage
                 StrokeShape = new RoundRectangle { CornerRadius = 16 },
                 Content = new Label { Text = trait, FontSize = 13 }
             });
-    }
+        }
     }
 
-    private async void OnEditClicked(object sender, EventArgs e)
+    private void LoadNotes()
+    {
+        NotesLayout.Children.Clear();
+        foreach (var note in _stubNotes)
+        {
+            NotesLayout.Children.Add(new Border
+            {
+                Padding = new Thickness(12),
+                StrokeShape = new RoundRectangle { CornerRadius = 8 },
+                Content = new Label { Text = note, FontSize = 14 }
+            });
+        }
+    }
+
+    private async void OnEditClicked(object? sender, EventArgs e)
     {
         var newName = await DisplayPromptAsync(
             "Edit Character",
@@ -69,7 +83,7 @@ public partial class CharacterProfilePage : ContentPage
         if (success)
         {
             CharacterName = newName;
-            Title = newName;
+            NameLabel.Text = newName;
         }
         else
         {
